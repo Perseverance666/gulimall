@@ -2,7 +2,7 @@ spring:
   datasource:
     username: root
     password: root
-    url: jdbc:mysql://192.168.138.102:3306/gulimall_pms
+    url: jdbc:mysql://192.168.138.102:3306/gulimall_sms
     driver-class-name: com.mysql.cj.jdbc.Driver
 
 mybatis-plus:
@@ -11,6 +11,5 @@ mybatis-plus:
     db-config:
       id-type: auto
 
-
 server:
-  port: 10000
+  port: 7000
