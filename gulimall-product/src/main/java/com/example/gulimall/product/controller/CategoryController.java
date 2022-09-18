@@ -78,6 +78,19 @@ public class CategoryController {
     }
 
     /**
+     * 推拽后，修改结点数据
+     * @param category
+     * @return
+     */
+    @RequestMapping("/update/sort")
+    //@RequiresPermissions("product:category:update")
+    public R updateSort(@RequestBody CategoryEntity[] category){
+        categoryService.updateBatchById(Arrays.asList(category));
+
+        return R.ok();
+    }
+
+    /**
      * 删除
      */
     @RequestMapping("/delete")
