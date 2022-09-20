@@ -6,7 +6,7 @@
  * 版权所有，侵权必究！
  */
 
-package com.example.common.validator.group;
+package com.example.common.valid.group;
 
 /**
  * 腾讯云

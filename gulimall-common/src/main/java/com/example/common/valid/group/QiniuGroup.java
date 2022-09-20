@@ -6,12 +6,12 @@
  * 版权所有，侵权必究！
  */
 
-package com.example.common.validator.group;
+package com.example.common.valid.group;
 
 /**
- * 阿里云
+ * 七牛
  *
  * @author Mark sunlightcs@gmail.com
  */
-public interface AliyunGroup {
+public interface QiniuGroup {
 }

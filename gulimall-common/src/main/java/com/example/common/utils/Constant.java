@@ -8,9 +8,9 @@
 
 package com.example.common.utils;
 
-import com.example.common.validator.group.AliyunGroup;
-import com.example.common.validator.group.QcloudGroup;
-import com.example.common.validator.group.QiniuGroup;
+import com.example.common.valid.group.AliyunGroup;
+import com.example.common.valid.group.QcloudGroup;
+import com.example.common.valid.group.QiniuGroup;
 
 import java.util.Optional;
 import java.util.stream.Stream;
