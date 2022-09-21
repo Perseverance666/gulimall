@@ -1,5 +1,11 @@
 package com.example.gulimall.product.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.example.gulimall.product.dao.BrandDao;
+import com.example.gulimall.product.dao.CategoryDao;
+import com.example.gulimall.product.entity.BrandEntity;
+import com.example.gulimall.product.entity.CategoryEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.Map;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -16,6 +22,11 @@ import com.example.gulimall.product.service.CategoryBrandRelationService;
 @Service("categoryBrandRelationService")
 public class CategoryBrandRelationServiceImpl extends ServiceImpl<CategoryBrandRelationDao, CategoryBrandRelationEntity> implements CategoryBrandRelationService {
 
+    @Autowired
+    private BrandDao brandDao;
+    @Autowired
+    private CategoryDao categoryDao;
+
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
         IPage<CategoryBrandRelationEntity> page = this.page(
@@ -24,6 +35,49 @@ public class CategoryBrandRelationServiceImpl extends ServiceImpl<CategoryBrandR
         );
 
         return new PageUtils(page);
+    }
+
+    @Override
+    public void saveDetail(CategoryBrandRelationEntity categoryBrandRelation) {
+        Long brandId = categoryBrandRelation.getBrandId();
+        Long catelogId = categoryBrandRelation.getCatelogId();
+
+        BrandEntity brandEntity = brandDao.selectById(brandId);
+        CategoryEntity categoryEntity = categoryDao.selectById(catelogId);
+
+        categoryBrandRelation.setBrandName(brandEntity.getName());
+        categoryBrandRelation.setCatelogName(categoryEntity.getName());
+
+        this.save(categoryBrandRelation);
+    }
+
+    /**
+     * brand表更改，关联表也更改
+     * @param brandId
+     * @param brandName
+     */
+    @Override
+    public void updateBrand(Long brandId,String brandName) {
+        CategoryBrandRelationEntity relationEntity = new CategoryBrandRelationEntity();
+        relationEntity.setBrandId(brandId);
+        relationEntity.setBrandName(brandName);
+
+        LambdaUpdateWrapper<CategoryBrandRelationEntity> luw = new LambdaUpdateWrapper<>();
+        luw.eq(CategoryBrandRelationEntity::getBrandId,brandId);
+        this.update(relationEntity,luw);
+
+
+    }
+
+    /**
+     * category表更改，关联表也更改
+     * 此处写xml文件
+     * @param catId
+     * @param name
+     */
+    @Override
+    public void updateCategory(Long catId, String name) {
+        this.baseMapper.updateCategory(catId,name);
     }
 
 }
