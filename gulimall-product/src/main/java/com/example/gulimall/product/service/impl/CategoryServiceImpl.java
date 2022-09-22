@@ -72,31 +72,19 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
 
     /**
      * 找出catelogId的全路径
-     * @param attrGroupId
+     * @param catelogId
      * @return
      */
     @Override
-    public Long[] findCatelogPath(Long attrGroupId) {
+    public Long[] findCatelogPath(Long catelogId) {
         List<Long> paths = new ArrayList<>();
-        List<Long> parentPath = findParentPath(attrGroupId, paths);
+        List<Long> parentPath = findParentPath(catelogId, paths);
 
         //结果是[225,25,2]，注意翻转
         Collections.reverse(parentPath);
 
         return parentPath.toArray(new Long[parentPath.size()]);
     }
-
-    /**
-     * 级联更新所有关联的数据
-     * @param category
-     */
-    @Transactional
-    @Override
-    public void updateCascade(CategoryEntity category) {
-        this.updateById(category);
-        categoryBrandRelationService.updateCategory(category.getCatId(),category.getName());
-    }
-
     /**
      * 递归查询 返回指定catelogId的所有父节点catelogId
      * 返回结果例：[225,25,2]
@@ -114,6 +102,20 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         }
         return paths;
     }
+
+    /**
+     * 级联更新所有关联的数据
+     * @param category
+     */
+    @Transactional
+    @Override
+    public void updateCascade(CategoryEntity category) {
+        this.updateById(category);
+        categoryBrandRelationService.updateCategory(category.getCatId(),category.getName());
+
+        //TODO 更新其他关联
+    }
+
 
     /**
      * 递归找出该分类下的所有子类

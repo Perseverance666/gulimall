@@ -6,11 +6,7 @@ import java.util.Map;
 
 //import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.example.gulimall.product.entity.CategoryEntity;
 import com.example.gulimall.product.service.CategoryService;
@@ -33,9 +29,9 @@ public class CategoryController {
     private CategoryService categoryService;
 
     /**
-     * 查出所有分类以及子分类，并以树形结构组装起来
+     * 获取所有分类及子分类
      */
-    @RequestMapping("/list/tree")
+    @GetMapping("/list/tree")
     //@RequiresPermissions("product:category:list")
     public R list(){
         List<CategoryEntity> entities = categoryService.listWithTree();
@@ -78,11 +74,11 @@ public class CategoryController {
     }
 
     /**
-     * 推拽后，修改结点数据
+     * 推拽后，修改分类父子关系以及顺序
      * @param category
      * @return
      */
-    @RequestMapping("/update/sort")
+    @PostMapping("/update/sort")
     //@RequiresPermissions("product:category:update")
     public R updateSort(@RequestBody CategoryEntity[] category){
         categoryService.updateBatchById(Arrays.asList(category));

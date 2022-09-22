@@ -1,10 +1,12 @@
 package com.example.gulimall.product.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.example.gulimall.product.entity.AttrEntity;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -49,14 +51,12 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
             });
         }
 
-        if (catelogId == 0) {
-            IPage<AttrGroupEntity> page = this.page(new Query<AttrGroupEntity>().getPage(params),lqw);
-            return new PageUtils(page);
-        } else {
+        if (catelogId != 0) {
             lqw.eq(catelogId != null, AttrGroupEntity::getCatelogId, catelogId);
-            IPage<AttrGroupEntity> page = this.page(new Query<AttrGroupEntity>().getPage(params), lqw);
-            return new PageUtils(page);
         }
+        IPage<AttrGroupEntity> page = this.page(new Query<AttrGroupEntity>().getPage(params),lqw);
+        return new PageUtils(page);
     }
+
 
 }
