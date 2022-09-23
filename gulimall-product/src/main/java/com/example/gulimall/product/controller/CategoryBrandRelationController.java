@@ -31,6 +31,7 @@ public class CategoryBrandRelationController {
 
     /**
      * 获取当前品牌所有 关联分类
+     * 品牌管理，关联分类，展示列表
      */
     @GetMapping("/catelog/list")
     //@RequiresPermissions("product:categorybrandrelation:list")
@@ -44,6 +45,7 @@ public class CategoryBrandRelationController {
 
     /**
      * 保存 关联分类
+     * 品牌管理，关联分类，新增分类功能
      */
     @RequestMapping("/save")
     //@RequiresPermissions("product:categorybrandrelation:save")

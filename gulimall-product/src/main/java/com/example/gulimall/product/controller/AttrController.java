@@ -31,16 +31,16 @@ public class AttrController {
 
 
     /**
-     * 获取分类规格参数,attrType=base 基本属性
-     * 获取分类销售属性,attrType=sale 销售属性
+     * 获取分类规格参数,attrType=base 规格参数右侧列表展示
+     * 获取分类销售属性,attrType=sale 销售属性右侧列表展示
      * @param params
      * @param catelogId
      * @return
      */
     @GetMapping("{attrType}/list/{catelogId}")
-    public R baseAttrList(@RequestParam Map<String, Object> params,@PathVariable("catelogId") Long catelogId,
+    public R getAttrList(@RequestParam Map<String, Object> params,@PathVariable("catelogId") Long catelogId,
                           @PathVariable("attrType") String attrType){
-        PageUtils page = attrService.queryBaseAttrPage(params,catelogId,attrType);
+        PageUtils page = attrService.queryAttrPage(params,catelogId,attrType);
         return R.ok().put("page", page);
     }
     /**
@@ -57,6 +57,7 @@ public class AttrController {
 
     /**
      * 查询属性详情
+     * 规格参数，销售属性的修改功能回显
      */
     @GetMapping("/info/{attrId}")
     //@RequiresPermissions("product:attr:info")
@@ -68,6 +69,7 @@ public class AttrController {
 
     /**
      * 保存属性【规格参数，销售属性】
+     * 规格参数，销售属性的新增
      */
     @PostMapping("/save")
     //@RequiresPermissions("product:attr:save")
@@ -79,6 +81,7 @@ public class AttrController {
 
     /**
      * 修改属性
+     * 规格参数，销售属性的修改功能
      */
     @PostMapping("/update")
     //@RequiresPermissions("product:attr:update")

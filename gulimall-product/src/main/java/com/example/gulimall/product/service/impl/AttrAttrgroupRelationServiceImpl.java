@@ -34,6 +34,11 @@ public class AttrAttrgroupRelationServiceImpl extends ServiceImpl<AttrAttrgroupR
     }
 
 
+    /**
+     * 删除属性与分组的关联关系
+     * 属性分组中，关联中的移除功能
+     * @param vos
+     */
     @Override
     public void deleteRelation(AttrGroupRelationVo[] vos) {
         List<AttrAttrgroupRelationEntity> relationEntities = Arrays.asList(vos).stream().map((vo) -> {
@@ -43,6 +48,22 @@ public class AttrAttrgroupRelationServiceImpl extends ServiceImpl<AttrAttrgroupR
         }).collect(Collectors.toList());
 
         baseMapper.deleteBatchRelation(relationEntities);
+    }
+
+    /**
+     * 添加属性与分组关联关系
+     * 属性分组，关联，新增关联功能
+     * @param vos
+     */
+    @Override
+    public void saveBatch(List<AttrGroupRelationVo> vos) {
+        List<AttrAttrgroupRelationEntity> entities = vos.stream().map((vo) -> {
+            AttrAttrgroupRelationEntity relationEntity = new AttrAttrgroupRelationEntity();
+            BeanUtils.copyProperties(vo, relationEntity);
+            return relationEntity;
+        }).collect(Collectors.toList());
+
+        this.saveBatch(entities);
     }
 
 }

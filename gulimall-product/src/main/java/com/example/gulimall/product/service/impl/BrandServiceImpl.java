@@ -37,6 +37,7 @@ public class BrandServiceImpl extends ServiceImpl<BrandDao, BrandEntity> impleme
     }
 
     /**
+     * 品牌管理，修改功能
      * 更新关联的其他表的信息，保证冗余字段的数据一致
      * @param brand
      */

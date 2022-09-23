@@ -57,7 +57,7 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
 
     /**
      * 保存属性【规格参数，销售属性】
-     *
+     * 规格参数，销售属性的新增
      * @param attr
      */
     @Transactional
@@ -68,7 +68,7 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
         //1、保存基本属性
         this.save(attrEntity);
         //2、如果属性是基本属性，保存关联关系
-        if(attr.getValueType() == ProductConstant.AttrEnum.ATTR_TYPE_BASE.getCode()){
+        if(attr.getAttrType() == ProductConstant.AttrEnum.ATTR_TYPE_BASE.getCode() && attr.getAttrGroupId() != null){
             AttrAttrgroupRelationEntity relationEntity = new AttrAttrgroupRelationEntity();
             relationEntity.setAttrId(attrEntity.getAttrId());
             relationEntity.setAttrGroupId(attr.getAttrGroupId());
@@ -78,18 +78,18 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
     }
 
     /**
-     * 获取分类规格参数
-     *
+     * 获取分类规格参数,attrType=base 规格参数右侧列表展示
+     * 获取分类销售属性,attrType=sale 销售属性右侧列表展示
      * @param params
      * @param catelogId
      * @param attrType
      * @return
      */
     @Override
-    public PageUtils queryBaseAttrPage(Map<String, Object> params, Long catelogId, String attrType) {
+    public PageUtils queryAttrPage(Map<String, Object> params, Long catelogId, String attrType) {
         LambdaQueryWrapper<AttrEntity> lqw = new LambdaQueryWrapper<>();
         //请求路径中attrType为base时，查基本属性，此时valueType=1；请求路径中attrType为sale时，查销售属性，此时valueType=0
-        lqw.eq(attrType != null, AttrEntity::getValueType,
+        lqw.eq(attrType != null, AttrEntity::getAttrType,
                 "base".equalsIgnoreCase(attrType) ? ProductConstant.AttrEnum.ATTR_TYPE_BASE.getCode() : ProductConstant.AttrEnum.ATTR_TYPE_SALE.getCode());
         String key = (String) params.get("key");
         if (!StringUtils.isEmpty(key)) {
@@ -140,7 +140,7 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
 
     /**
      * 查询属性详情
-     *
+     * 规格参数，销售属性的修改功能回显
      * @param attrId
      * @return
      */
@@ -151,7 +151,7 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
         BeanUtils.copyProperties(attrEntity, attrRespVo);
 
         //若当前属性是基本属性，设置分组信息
-        if(attrEntity.getValueType() == ProductConstant.AttrEnum.ATTR_TYPE_BASE.getCode()){
+        if(attrEntity.getAttrType() == ProductConstant.AttrEnum.ATTR_TYPE_BASE.getCode()){
             //1、设置分组信息
             LambdaQueryWrapper<AttrAttrgroupRelationEntity> lqw = new LambdaQueryWrapper<>();
             lqw.eq(AttrAttrgroupRelationEntity::getAttrId, attrId);
@@ -177,7 +177,7 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
 
     /**
      * 修改属性
-     *
+     * 规格参数，销售属性的修改功能
      * @param attr
      */
     @Transactional
@@ -188,7 +188,7 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
         this.updateById(attrEntity);
 
         //若当前属性是基本属性，修改分组信息
-        if(attrEntity.getValueType() == ProductConstant.AttrEnum.ATTR_TYPE_BASE.getCode()){
+        if(attrEntity.getAttrType() == ProductConstant.AttrEnum.ATTR_TYPE_BASE.getCode()){
             //修改分组关联
             AttrAttrgroupRelationEntity relationEntity = new AttrAttrgroupRelationEntity();
             relationEntity.setAttrId(attr.getAttrId());
@@ -212,6 +212,7 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
 
     /**
      * 获取属性分组的关联的所有属性
+     * 属性分组，关联展示
      * @param attrgroupId
      * @return
      */
@@ -235,17 +236,50 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
 
     /**
      * 获取属性分组没有关联的其他属性
+     * 属性分组，关联，新建关联后的展示
+     * 展示该分类下，展示没有被其他属性分组关联的规格参数
      * @param params
      * @param attrgroupId
      * @return
      */
     @Override
     public PageUtils getNoRelationAttr(Map<String, Object> params, Long attrgroupId) {
-        //1、当前分组只能关联自己所属分类里面的属性
+        //1、当前分组只能关联自己所属分类里面的规格参数
+        AttrGroupEntity attrGroupEntity = attrGroupDao.selectById(attrgroupId);
+        Long catelogId = attrGroupEntity.getCatelogId();
 
+        //2、当前分组只能关联别的分组没有关联的规格参数
+        //2.1、找到当前分类的所有分组
+        LambdaQueryWrapper<AttrGroupEntity> lqw = new LambdaQueryWrapper<>();
+        lqw.eq(catelogId != null,AttrGroupEntity::getCatelogId,catelogId);
+        List<AttrGroupEntity> attrGroupEntities = attrGroupDao.selectList(lqw);
+        List<Long> attrGroupIds = attrGroupEntities.stream().map((attrGroup) -> {
+            return attrGroup.getAttrGroupId();
+        }).collect(Collectors.toList());
 
-        //2、当前分组只能关联别的分组没有引用的属性
-        return null;
+        //2.2、找到这些分组关联的规格参数
+        LambdaQueryWrapper<AttrAttrgroupRelationEntity> lqw2 = new LambdaQueryWrapper<>();
+        lqw2.in(attrGroupIds != null && attrGroupIds.size()>0,AttrAttrgroupRelationEntity::getAttrGroupId,attrGroupIds);
+        List<AttrAttrgroupRelationEntity> relationEntities = attrAttrgroupRelationDao.selectList(lqw2);
+        List<Long> attrIds = relationEntities.stream().map((relationEntity) -> {
+            return relationEntity.getAttrId();
+        }).collect(Collectors.toList());
+
+        //2.3、从当前分类的所有属性中移除这些规格参数
+        LambdaQueryWrapper<AttrEntity> lqw3 = new LambdaQueryWrapper<>();
+        lqw3.eq(AttrEntity::getCatelogId,catelogId).eq(AttrEntity::getAttrType,ProductConstant.AttrEnum.ATTR_TYPE_BASE.getCode());
+        lqw3.notIn(attrIds != null && attrIds.size()>0,AttrEntity::getAttrId,attrIds);
+        //获取查询时的key
+        String key = (String) params.get("key");
+        if(StringUtils.isNotEmpty(key)){
+            lqw3.and((wrapper) -> {
+                wrapper.eq(AttrEntity::getAttrId,key).or().like(AttrEntity::getAttrName,key);
+            });
+        }
+
+        IPage<AttrEntity> page = this.page(new Query<AttrEntity>().getPage(params),lqw3);
+
+        return new PageUtils(page);
     }
 
 }

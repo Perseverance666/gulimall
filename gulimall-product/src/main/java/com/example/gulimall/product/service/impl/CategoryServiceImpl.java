@@ -38,7 +38,9 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
     }
 
     /**
-     * 查出所有分类以及子分类，并以树形结构组装起来
+     * 获取所有分类及子分类
+     * 并返回json树形结构
+     * 分类维护 以及 平台属性左侧的列表展示
      *
      * @return
      */
@@ -71,7 +73,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
     }
 
     /**
-     * 找出catelogId的全路径
+     * 找出指定catelogId的全路径
      * @param catelogId
      * @return
      */

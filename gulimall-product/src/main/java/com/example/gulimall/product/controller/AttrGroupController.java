@@ -40,7 +40,21 @@ public class AttrGroupController {
     private AttrAttrgroupRelationService attrAttrgroupRelationService;
 
     /**
+     * 获取分类属性分组
+     * 属性分组右侧列表展示
+     */
+    @GetMapping("/list/{catelogId}")
+    //@RequiresPermissions("product:attrgroup:list")
+    public R list(@RequestParam Map<String, Object> params,@PathVariable Long catelogId){
+//        PageUtils page = attrGroupService.queryPage(params);
+        PageUtils page = attrGroupService.queryPage(params,catelogId);
+
+        return R.ok().put("page", page);
+    }
+
+    /**
      * 获取属性分组的关联的所有属性
+     * 属性分组中的关联展示
      * @param attrgroupId
      * @return
      */
@@ -52,6 +66,8 @@ public class AttrGroupController {
 
     /**
      * 获取属性分组没有关联的其他属性
+     * 属性分组，关联，新建关联后的展示
+     * 展示该分类下，展示没有被其他属性分组关联的规格参数
      * @param params
      * @param attrgroupId
      * @return
@@ -62,22 +78,22 @@ public class AttrGroupController {
         return R.ok().put("page",page);
     }
 
-
     /**
-     * 获取分类属性分组
+     * 添加属性与分组关联关系
+     * 属性分组，关联，新增关联功能
+     * @param vos
+     * @return
      */
-    @GetMapping("/list/{catelogId}")
-    //@RequiresPermissions("product:attrgroup:list")
-    public R list(@RequestParam Map<String, Object> params,@PathVariable Long catelogId){
-//        PageUtils page = attrGroupService.queryPage(params);
-        PageUtils page = attrGroupService.queryPage(params,catelogId);
-
-        return R.ok().put("page", page);
+    @PostMapping("/attr/relation")
+    public R saveAttrRelation(@RequestBody List<AttrGroupRelationVo> vos){
+        attrAttrgroupRelationService.saveBatch(vos);
+        return R.ok();
     }
 
 
     /**
      * 获取属性分组详情
+     * 属性分组，修改回显
      */
     @GetMapping("/info/{attrGroupId}")
     //@RequiresPermissions("product:attrgroup:info")
@@ -113,7 +129,7 @@ public class AttrGroupController {
     }
 
     /**
-     * 删除
+     * 属性分组，删除功能
      */
     @RequestMapping("/delete")
     //@RequiresPermissions("product:attrgroup:delete")
@@ -125,6 +141,7 @@ public class AttrGroupController {
 
     /**
      * 删除属性与分组的关联关系
+     * 属性分组中，关联中的移除功能
      * @param vos
      * @return
      */

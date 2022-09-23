@@ -35,7 +35,7 @@ public class BrandController {
     private BrandService brandService;
 
     /**
-     * 列表
+     * 品牌管理，列表展示
      */
     @RequestMapping("/list")
     //@RequiresPermissions("product:brand:list")
@@ -47,7 +47,7 @@ public class BrandController {
 
 
     /**
-     * 信息
+     * 品牌管理，修改回显
      */
     @RequestMapping("/info/{brandId}")
     //@RequiresPermissions("product:brand:info")
@@ -58,24 +58,11 @@ public class BrandController {
     }
 
     /**
-     * 保存
+     * 品牌管理，新增功能
      */
     @RequestMapping("/save")
     //@RequiresPermissions("product:brand:save")
-    public R save(@Validated({AddGroup.class}) @RequestBody BrandEntity brand /*, BindingResult result*/){
-//        Map<String,String> map = new HashMap<>();
-//        if(result.hasErrors()){         //错误校验
-//            result.getFieldErrors().forEach((fieldError) -> {
-//                //获取到错误提示
-//                String message = fieldError.getDefaultMessage();
-//                //获取错误的属性名字
-//                String field = fieldError.getField();
-//                map.put(field,message);
-//            });
-//            return R.error(400,"提交的数据不合法").put("data",map);
-//        }else{
-//            brandService.save(brand);
-//        }
+    public R save(@Validated({AddGroup.class}) @RequestBody BrandEntity brand){
 
         brandService.save(brand);
 
@@ -83,7 +70,7 @@ public class BrandController {
     }
 
     /**
-     * 修改品牌信息
+     * 品牌管理，修改功能
      */
     @RequestMapping("/update")
     //@RequiresPermissions("product:brand:update")
@@ -94,7 +81,7 @@ public class BrandController {
     }
 
     /**
-     * 修改状态
+     * 品牌管理，修改显示状态功能
      */
     @RequestMapping("/update/status")
     //@RequiresPermissions("product:brand:update")
@@ -105,7 +92,7 @@ public class BrandController {
     }
 
     /**
-     * 删除
+     * 品牌管理，删除功能
      */
     @RequestMapping("/delete")
     //@RequiresPermissions("product:brand:delete")

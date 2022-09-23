@@ -17,6 +17,7 @@ import com.example.common.utils.Query;
 import com.example.gulimall.product.dao.CategoryBrandRelationDao;
 import com.example.gulimall.product.entity.CategoryBrandRelationEntity;
 import com.example.gulimall.product.service.CategoryBrandRelationService;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service("categoryBrandRelationService")
@@ -37,6 +38,10 @@ public class CategoryBrandRelationServiceImpl extends ServiceImpl<CategoryBrandR
         return new PageUtils(page);
     }
 
+    /**
+     * 品牌管理，关联分类，新增关联功能
+     * @param categoryBrandRelation
+     */
     @Override
     public void saveDetail(CategoryBrandRelationEntity categoryBrandRelation) {
         Long brandId = categoryBrandRelation.getBrandId();
@@ -52,10 +57,12 @@ public class CategoryBrandRelationServiceImpl extends ServiceImpl<CategoryBrandR
     }
 
     /**
+     * 品牌管理，修改功能
      * brand表更改，关联表也更改
      * @param brandId
      * @param brandName
      */
+    @Transactional
     @Override
     public void updateBrand(Long brandId,String brandName) {
         CategoryBrandRelationEntity relationEntity = new CategoryBrandRelationEntity();

@@ -35,7 +35,8 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
     }
 
     /**
-     * 点击指定三级分类后 的分页查询
+     * 获取分类属性分组
+     * 属性分组右侧列表展示
      * @param params
      * @param catelogId
      * @return
