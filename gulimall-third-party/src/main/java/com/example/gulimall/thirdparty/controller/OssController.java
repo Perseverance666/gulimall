@@ -7,6 +7,7 @@ import com.aliyun.oss.model.PolicyConditions;
 import com.example.common.utils.R;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -34,7 +35,12 @@ public class OssController {
     @Value("${spring.cloud.alicloud.access-key}")
     private String accessId;
 
-    @RequestMapping("/oss/policy")
+
+    /**
+     * 获取对象存储服务端签名
+     * @return
+     */
+    @GetMapping("/oss/policy")
     public R policy() {
         //https://gulimall-2022-09.oss-cn-beijing.aliyuncs.com/Tom.jpg
 

@@ -10,6 +10,7 @@ import com.example.gulimall.product.service.AttrAttrgroupRelationService;
 import com.example.gulimall.product.service.AttrService;
 import com.example.gulimall.product.service.CategoryService;
 import com.example.gulimall.product.vo.AttrGroupRelationVo;
+import com.example.gulimall.product.vo.AttrGroupWithAttrsVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,6 +39,19 @@ public class AttrGroupController {
     private AttrService attrService;
     @Autowired
     private AttrAttrgroupRelationService attrAttrgroupRelationService;
+
+    /**
+     * 获取分类下所有分组&关联属性
+     * 商品维护，发布商品，点击 下一步：设置基本参数后，展示
+     * @param catelogId
+     * @return
+     */
+    @GetMapping("/{catelogId}/withattr")
+    public R getAttrGroupWithAttrs(@PathVariable("catelogId") Long catelogId){
+        List<AttrGroupWithAttrsVo> vos = attrGroupService.getAttrGroupWithAttrByCatelogId(catelogId);
+
+        return R.ok().put("data",vos);
+    }
 
     /**
      * 获取分类属性分组

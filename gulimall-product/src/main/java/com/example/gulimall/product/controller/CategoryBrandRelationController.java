@@ -3,9 +3,12 @@ package com.example.gulimall.product.controller;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 //import org.apache.shiro.authz.annotation.RequiresPermissions;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.example.gulimall.product.entity.BrandEntity;
+import com.example.gulimall.product.vo.BrandVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,8 +32,29 @@ public class CategoryBrandRelationController {
     @Autowired
     private CategoryBrandRelationService categoryBrandRelationService;
 
+
     /**
-     * 获取当前品牌所有 关联分类
+     * 获取分类关联的品牌
+     * 商品维护，发布商品，点击选择分类后的选择品牌展示
+     * @param catId
+     * @return
+     */
+    @GetMapping("/brands/list")
+    public R relationBrandList(@RequestParam("catId") Long catId){
+        List<BrandEntity> brandEntities = categoryBrandRelationService.getBrandsByCatId(catId);
+
+        List<BrandVo> brandVos = brandEntities.stream().map((brandEntity) -> {
+            BrandVo brandVo = new BrandVo();
+            brandVo.setBrandId(brandEntity.getBrandId());
+            brandVo.setBrandName(brandEntity.getName());
+            return brandVo;
+        }).collect(Collectors.toList());
+
+        return R.ok().put("data",brandVos);
+    }
+
+    /**
+     * 获取品牌关联的分类
      * 品牌管理，关联分类，展示列表
      */
     @GetMapping("/catelog/list")
@@ -44,10 +68,10 @@ public class CategoryBrandRelationController {
     }
 
     /**
-     * 保存 关联分类
+     * 新增品牌与分类关联关系
      * 品牌管理，关联分类，新增分类功能
      */
-    @RequestMapping("/save")
+    @PostMapping("/save")
     //@RequiresPermissions("product:categorybrandrelation:save")
     public R save(@RequestBody CategoryBrandRelationEntity categoryBrandRelation){
         categoryBrandRelationService.saveDetail(categoryBrandRelation);
