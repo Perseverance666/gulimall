@@ -1,11 +1,13 @@
 package com.example.gulimall.product.service.impl;
 
+import com.example.common.to.SkuReductionTo;
+import com.example.common.to.SpuBoundTo;
+import com.example.common.utils.R;
 import com.example.gulimall.product.entity.*;
+import com.example.gulimall.product.feign.CouponFeignService;
 import com.example.gulimall.product.service.*;
-import com.example.gulimall.product.vo.BaseAttrs;
-import com.example.gulimall.product.vo.Images;
-import com.example.gulimall.product.vo.Skus;
-import com.example.gulimall.product.vo.SpuSaveVo;
+import com.example.gulimall.product.vo.*;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -43,6 +45,8 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
     private SkuImagesService skuImagesService;
     @Autowired
     private SkuSaleAttrValueService skuSaleAttrValueService;
+    @Autowired
+    private CouponFeignService couponFeignService;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -55,6 +59,7 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
     }
 
     /**
+     * TODO 高级部分再来完善
      * 新增商品
      * 商品维护，发布商品，输入SKU信息后，点击下一步：保存商品信息
      * @param vo
@@ -110,17 +115,27 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
             productAttrValueService.saveBatch(productAttrValueEntities);
         }
 
-        //5、保存当前spu对应的所有sku信息
+        //5、保存spu的积分信息 (跨库)gulimall_sms -> sms_spu_bounds
+        Bounds bounds = vo.getBounds();
+        SpuBoundTo spuBoundTo = new SpuBoundTo();
+        BeanUtils.copyProperties(bounds,spuBoundTo);
+        spuBoundTo.setSpuId(spuId);
+        R r2 = couponFeignService.saveSpuBounds(spuBoundTo);
+        if(r2.getCode() != 0){
+            log.error("远程保存spu积分信息失败！");
+        }
+
+        //6、保存当前spu对应的所有sku信息
         List<Skus> skus = vo.getSkus();
         if(skus != null && skus.size() > 0){
             //由于后面一直用到skuId，故不用stream流收集起来再保存了，foreach遍历过程中一个一个保存到pms_sku_info表中
             skus.forEach((sku) -> {
-                //5.1、保存sku的基本信息 pms_sku_info
+                //6.1、保存sku的基本信息 pms_sku_info
                 SkuInfoEntity skuInfoEntity = new SkuInfoEntity();
                 BeanUtils.copyProperties(sku,skuInfoEntity);
                 skuInfoEntity.setSpuId(spuId);
                 skuInfoEntity.setBrandId(spuInfoEntity.getBrandId());
-                skuInfoEntity.setCatalogId(skuInfoEntity.getCatalogId());
+                skuInfoEntity.setCatalogId(spuInfoEntity.getCatalogId());
                 skuInfoEntity.setSaleCount(0L);
 
                 List<Images> imgs = sku.getImages();
@@ -133,17 +148,20 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
                 skuInfoService.save(skuInfoEntity);
                 //保存基本信息到pms_sku_info表中后，获取skuId，接下来一直要用
                 Long skuId = skuInfoEntity.getSkuId();
-                //5.2、保存sku的图片信息 pms_sku_images
+                //6.2、保存sku的图片信息 pms_sku_images
                 List<SkuImagesEntity> skuImagesEntities = sku.getImages().stream().map((img) -> {
                     SkuImagesEntity skuImagesEntity = new SkuImagesEntity();
                     skuImagesEntity.setSkuId(skuId);
                     skuImagesEntity.setImgUrl(img.getImgUrl());
                     skuImagesEntity.setDefaultImg(img.getDefaultImg());
                     return skuImagesEntity;
+                }).filter((entity) -> {
+                    //返回true,即有照片，就保存到表中，false就不保存
+                    return StringUtils.isNotEmpty(entity.getImgUrl());
                 }).collect(Collectors.toList());
                 skuImagesService.saveBatch(skuImagesEntities);
 
-                //5.3、sku的销售属性信息 pms_sku_sale_attr_value
+                //6.3、sku的销售属性信息 pms_sku_sale_attr_value
                 List<SkuSaleAttrValueEntity> skuSaleAttrValueEntities = sku.getAttr().stream().map((saleAttr) -> {
                     SkuSaleAttrValueEntity skuSaleAttrValueEntity = new SkuSaleAttrValueEntity();
                     BeanUtils.copyProperties(saleAttr, skuSaleAttrValueEntity);
@@ -152,17 +170,22 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
                 }).collect(Collectors.toList());
                 skuSaleAttrValueService.saveBatch(skuSaleAttrValueEntities);
 
+                //6.4、保存sku的优惠、满减等信息 (跨库)gulimall_sms -> sms_sku_ladder \ sms_sku_full_reduction \ sms_member_price
+                SkuReductionTo skuReductionTo = new SkuReductionTo();
+                BeanUtils.copyProperties(sku,skuReductionTo);
+                skuReductionTo.setSkuId(skuId);
+                //有满减优惠，则保存到表中，不保存满0减0这样无用的数据
+                if(skuReductionTo.getFullCount() > 0 || skuReductionTo.getFullPrice().compareTo(new BigDecimal("0")) == 1){
+                    R r1 = couponFeignService.saveSkuReduction(skuReductionTo);
+                    if(r1.getCode() != 0){
+                        log.error("远程保存sku的优惠、满减等信息失败！");
+                    }
+                }
+
 
             });
         }
 
-
-
-
-
-        //5.4、sku的优惠、满减等信息 (跨库)gulimall_sms -> sms_sku_ladder \ sms_sku_full_reduction \ sms_member_price
-
-        //6、保存spu的积分信息 (跨库)gulimall_sms -> sms_spu_bounds
 
     }
 
