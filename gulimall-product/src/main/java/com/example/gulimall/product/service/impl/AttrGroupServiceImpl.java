@@ -42,7 +42,7 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
 
     /**
      * 获取分类属性分组
-     * 属性分组右侧列表展示
+     * 商品系统，属性分组，属性分组右侧列表展示
      * @param params
      * @param catelogId
      * @return
@@ -67,7 +67,7 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
 
     /**
      * 获取分类下所有分组&关联属性
-     * 商品维护，发布商品，点击 下一步：设置基本参数后，展示
+     * 商品系统，商品维护，发布商品，点击 下一步：设置基本参数后，展示
      * @param catelogId
      * @return
      */

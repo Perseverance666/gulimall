@@ -29,12 +29,15 @@ public class SpuInfoController {
     private SpuInfoService spuInfoService;
 
     /**
-     * 列表
+     * spu检索
+     * 商品系统，商品维护，spu管理 页面展示
+     * @param params
+     * @return
      */
-    @RequestMapping("/list")
+    @GetMapping("/list")
     //@RequiresPermissions("product:spuinfo:list")
     public R list(@RequestParam Map<String, Object> params){
-        PageUtils page = spuInfoService.queryPage(params);
+        PageUtils page = spuInfoService.queryPageByCondition(params);
 
         return R.ok().put("page", page);
     }
@@ -53,7 +56,7 @@ public class SpuInfoController {
 
     /**
      * 新增商品
-     * 商品维护，发布商品，输入SKU信息后，点击下一步：保存商品信息
+     * 商品系统，商品维护，发布商品，输入SKU信息后，点击下一步：保存商品信息
      * @param vo
      * @return
      */

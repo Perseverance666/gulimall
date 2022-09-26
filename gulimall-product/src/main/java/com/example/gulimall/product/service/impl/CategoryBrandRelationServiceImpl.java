@@ -47,7 +47,7 @@ public class CategoryBrandRelationServiceImpl extends ServiceImpl<CategoryBrandR
     }
 
     /**
-     * 品牌管理，关联分类，新增关联功能
+     * 商品系统，品牌管理，关联分类，新增关联功能
      * @param categoryBrandRelation
      */
     @Override
@@ -98,7 +98,9 @@ public class CategoryBrandRelationServiceImpl extends ServiceImpl<CategoryBrandR
 
     /**
      * 获取分类关联的品牌
-     * 商品维护，发布商品，点击选择分类后的选择品牌展示
+     * 商品系统，商品维护，发布商品，点击选择分类后的选择品牌展示
+     * 商品系统，商品维护，spu管理，点击分类后的品牌展示
+     * 商品系统，商品维护，商品管理，点击分类后的品牌展示
      * @param catId
      * @return
      */

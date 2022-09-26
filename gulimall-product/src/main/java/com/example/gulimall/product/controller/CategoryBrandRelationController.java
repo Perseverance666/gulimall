@@ -35,7 +35,9 @@ public class CategoryBrandRelationController {
 
     /**
      * 获取分类关联的品牌
-     * 商品维护，发布商品，点击选择分类后的选择品牌展示
+     * 商品系统，商品维护，发布商品，点击选择分类后的选择品牌展示
+     * 商品系统，商品维护，spu管理，点击分类后的品牌展示
+     * 商品系统，商品维护，商品管理，点击分类后的品牌展示
      * @param catId
      * @return
      */
@@ -55,7 +57,7 @@ public class CategoryBrandRelationController {
 
     /**
      * 获取品牌关联的分类
-     * 品牌管理，关联分类，展示列表
+     * 商品系统，品牌管理，关联分类，展示列表
      */
     @GetMapping("/catelog/list")
     //@RequiresPermissions("product:categorybrandrelation:list")
@@ -69,7 +71,7 @@ public class CategoryBrandRelationController {
 
     /**
      * 新增品牌与分类关联关系
-     * 品牌管理，关联分类，新增分类功能
+     * 商品系统，品牌管理，关联分类，新增分类功能
      */
     @PostMapping("/save")
     //@RequiresPermissions("product:categorybrandrelation:save")

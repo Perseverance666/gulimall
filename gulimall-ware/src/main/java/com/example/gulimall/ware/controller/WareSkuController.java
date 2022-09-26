@@ -5,11 +5,7 @@ import java.util.Map;
 
 //import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.example.gulimall.ware.entity.WareSkuEntity;
 import com.example.gulimall.ware.service.WareSkuService;
@@ -32,9 +28,12 @@ public class WareSkuController {
     private WareSkuService wareSkuService;
 
     /**
-     * 列表
+     * 查询商品库存
+     * 库存系统，商品库存，列表展示
+     * @param params
+     * @return
      */
-    @RequestMapping("/list")
+    @GetMapping("/list")
     //@RequiresPermissions("ware:waresku:list")
     public R list(@RequestParam Map<String, Object> params){
         PageUtils page = wareSkuService.queryPage(params);

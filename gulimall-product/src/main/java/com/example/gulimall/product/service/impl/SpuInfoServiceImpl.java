@@ -1,5 +1,6 @@
 package com.example.gulimall.product.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.example.common.to.SkuReductionTo;
 import com.example.common.to.SpuBoundTo;
 import com.example.common.utils.R;
@@ -61,7 +62,7 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
     /**
      * TODO 高级部分再来完善
      * 新增商品
-     * 商品维护，发布商品，输入SKU信息后，点击下一步：保存商品信息
+     * 商品系统，商品维护，发布商品，输入SKU信息后，点击下一步：保存商品信息
      * @param vo
      */
     @Transactional
@@ -187,6 +188,39 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
         }
 
 
+    }
+
+    /**
+     * spu检索
+     * 商品系统，商品维护，spu管理 页面展示
+     * @param params
+     * @return
+     */
+    @Override
+    public PageUtils queryPageByCondition(Map<String, Object> params) {
+        LambdaQueryWrapper<SpuInfoEntity> lqw = new LambdaQueryWrapper<>();
+
+        String key = (String) params.get("key");
+        if(StringUtils.isNotEmpty(key)){
+            lqw.and((wrapper) -> {
+                wrapper.eq(SpuInfoEntity::getId,key).or().like(SpuInfoEntity::getSpuName,key);
+            });
+        }
+        String status = (String) params.get("status");
+        if(StringUtils.isNotEmpty(status)){
+            lqw.eq(SpuInfoEntity::getPublishStatus,status);
+        }
+        String brandId = (String) params.get("brandId");
+        if(StringUtils.isNotEmpty(brandId) && !"0".equalsIgnoreCase(brandId)){
+            lqw.eq(SpuInfoEntity::getBrandId,brandId);
+        }
+        String catelogId = (String) params.get("catelogId");
+        if(StringUtils.isNotEmpty(catelogId) && !"0".equalsIgnoreCase(catelogId)){
+            lqw.eq(SpuInfoEntity::getCatalogId,catelogId);
+        }
+        IPage<SpuInfoEntity> page = this.page(new Query<SpuInfoEntity>().getPage(params),lqw);
+
+        return new PageUtils(page);
     }
 
 }

@@ -57,7 +57,7 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
 
     /**
      * 保存属性【规格参数，销售属性】
-     * 规格参数，销售属性的新增
+     * 商品系统，平台属性，规格参数，销售属性的新增
      * @param attr
      */
     @Transactional
@@ -78,8 +78,8 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
     }
 
     /**
-     * 获取分类规格参数,attrType=base 规格参数右侧列表展示
-     * 获取分类销售属性,attrType=sale 销售属性右侧列表展示
+     * 商品系统，获取分类规格参数,attrType=base 规格参数右侧列表展示
+     * 商品系统，获取分类销售属性,attrType=sale 销售属性右侧列表展示
      * @param params
      * @param catelogId
      * @param attrType
@@ -140,7 +140,7 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
 
     /**
      * 查询属性详情
-     * 规格参数，销售属性的修改功能回显
+     * 商品系统，平台属性，规格参数和销售属性的修改功能回显
      * @param attrId
      * @return
      */
@@ -177,7 +177,7 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
 
     /**
      * 修改属性
-     * 规格参数，销售属性的修改功能
+     * 商品系统，平台属性，规格参数，销售属性的修改功能
      * @param attr
      */
     @Transactional
@@ -212,7 +212,7 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
 
     /**
      * 获取属性分组的关联的所有属性
-     * 属性分组，关联展示
+     * 商品系统，平台属性，属性分组，关联展示
      * @param attrgroupId
      * @return
      */
@@ -236,7 +236,7 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
 
     /**
      * 获取属性分组没有关联的其他属性
-     * 属性分组，关联，新建关联后的展示
+     * 商品系统，平台展示，属性分组，关联，新建关联后的展示
      * 展示该分类下，展示没有被其他属性分组关联的规格参数
      * @param params
      * @param attrgroupId

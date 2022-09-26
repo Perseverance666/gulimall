@@ -35,7 +35,9 @@ public class BrandController {
     private BrandService brandService;
 
     /**
-     * 品牌管理，列表展示
+     * 商品系统，品牌管理，列表展示
+     * @param params
+     * @return
      */
     @RequestMapping("/list")
     //@RequiresPermissions("product:brand:list")
@@ -47,7 +49,7 @@ public class BrandController {
 
 
     /**
-     * 品牌管理，修改回显
+     * 商品系统，品牌管理，修改回显
      */
     @RequestMapping("/info/{brandId}")
     //@RequiresPermissions("product:brand:info")
@@ -58,7 +60,7 @@ public class BrandController {
     }
 
     /**
-     * 品牌管理，新增功能
+     * 商品系统，品牌管理，新增功能
      */
     @RequestMapping("/save")
     //@RequiresPermissions("product:brand:save")
@@ -70,7 +72,7 @@ public class BrandController {
     }
 
     /**
-     * 品牌管理，修改功能
+     * 商品系统，品牌管理，修改功能
      */
     @RequestMapping("/update")
     //@RequiresPermissions("product:brand:update")
@@ -81,7 +83,7 @@ public class BrandController {
     }
 
     /**
-     * 品牌管理，修改显示状态功能
+     * 商品系统，品牌管理，修改显示状态功能
      */
     @RequestMapping("/update/status")
     //@RequiresPermissions("product:brand:update")
@@ -92,7 +94,7 @@ public class BrandController {
     }
 
     /**
-     * 品牌管理，删除功能
+     * 商品系统，品牌管理，删除功能
      */
     @RequestMapping("/delete")
     //@RequiresPermissions("product:brand:delete")

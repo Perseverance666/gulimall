@@ -31,8 +31,8 @@ public class AttrController {
 
 
     /**
-     * 获取分类规格参数,attrType=base 规格参数右侧列表展示
-     * 获取分类销售属性,attrType=sale 销售属性右侧列表展示
+     * 商品系统，获取分类规格参数,attrType=base 规格参数右侧列表展示
+     * 商品系统，获取分类销售属性,attrType=sale 销售属性右侧列表展示
      * @param params
      * @param catelogId
      * @return
@@ -57,7 +57,7 @@ public class AttrController {
 
     /**
      * 查询属性详情
-     * 规格参数，销售属性的修改功能回显
+     * 商品系统，平台属性，规格参数和销售属性的修改功能回显
      */
     @GetMapping("/info/{attrId}")
     //@RequiresPermissions("product:attr:info")
@@ -69,7 +69,7 @@ public class AttrController {
 
     /**
      * 保存属性【规格参数，销售属性】
-     * 规格参数，销售属性的新增
+     * 商品系统，平台属性，规格参数，销售属性的新增
      */
     @PostMapping("/save")
     //@RequiresPermissions("product:attr:save")
@@ -81,7 +81,7 @@ public class AttrController {
 
     /**
      * 修改属性
-     * 规格参数，销售属性的修改功能
+     * 商品系统，规格参数，销售属性的修改功能
      */
     @PostMapping("/update")
     //@RequiresPermissions("product:attr:update")

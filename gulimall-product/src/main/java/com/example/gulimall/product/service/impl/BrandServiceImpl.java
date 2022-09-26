@@ -23,6 +23,11 @@ public class BrandServiceImpl extends ServiceImpl<BrandDao, BrandEntity> impleme
     @Autowired
     private CategoryBrandRelationService categoryBrandRelationService;
 
+    /**
+     * 商品系统，品牌管理，列表展示
+     * @param params
+     * @return
+     */
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
         String key = (String) params.get("key");
@@ -37,7 +42,7 @@ public class BrandServiceImpl extends ServiceImpl<BrandDao, BrandEntity> impleme
     }
 
     /**
-     * 品牌管理，修改功能
+     * 商品系统，品牌管理，修改功能
      * 更新关联的其他表的信息，保证冗余字段的数据一致
      * @param brand
      */

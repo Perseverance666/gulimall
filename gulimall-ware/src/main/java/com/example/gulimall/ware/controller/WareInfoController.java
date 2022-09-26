@@ -32,7 +32,10 @@ public class WareInfoController {
     private WareInfoService wareInfoService;
 
     /**
-     * 列表
+     * 仓库列表
+     * 库存系统，仓库维护，列表展示
+     * @param params
+     * @return
      */
     @RequestMapping("/list")
     //@RequiresPermissions("ware:wareinfo:list")

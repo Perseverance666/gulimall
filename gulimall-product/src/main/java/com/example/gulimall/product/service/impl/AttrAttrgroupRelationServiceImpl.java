@@ -36,7 +36,7 @@ public class AttrAttrgroupRelationServiceImpl extends ServiceImpl<AttrAttrgroupR
 
     /**
      * 删除属性与分组的关联关系
-     * 属性分组中，关联中的移除功能
+     * 商品系统，平台属性，属性分组，关联中的移除功能
      * @param vos
      */
     @Override
@@ -52,7 +52,7 @@ public class AttrAttrgroupRelationServiceImpl extends ServiceImpl<AttrAttrgroupR
 
     /**
      * 添加属性与分组关联关系
-     * 属性分组，关联，新增关联功能
+     * 商品系统，平台属性，属性分组，关联，新增关联功能
      * @param vos
      */
     @Override

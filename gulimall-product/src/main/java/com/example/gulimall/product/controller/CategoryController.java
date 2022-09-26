@@ -31,7 +31,7 @@ public class CategoryController {
     /**
      * 获取所有分类及子分类
      * 并返回json树形结构
-     * 分类维护 以及 平台属性左侧的列表展示
+     * 商品系统，分类维护 以及 平台属性左侧的列表展示
      */
     @GetMapping("/list/tree")
     //@RequiresPermissions("product:category:list")
@@ -77,7 +77,7 @@ public class CategoryController {
 
     /**
      * 修改分类父子关系以及顺序
-     * 分类维护，开启拖拽并批量保存后可以修改
+     * 商品系统，分类维护，开启拖拽并批量保存后可以修改
      * @param category
      * @return
      */
@@ -90,7 +90,7 @@ public class CategoryController {
     }
 
     /**
-     * 分类维护，批量删除
+     * 商品系统，分类维护，批量删除
      */
     @RequestMapping("/delete")
     //@RequiresPermissions("product:category:delete")

@@ -42,7 +42,7 @@ public class AttrGroupController {
 
     /**
      * 获取分类下所有分组&关联属性
-     * 商品维护，发布商品，点击 下一步：设置基本参数后，展示
+     * 商品系统，商品维护，发布商品，点击 下一步：设置基本参数后，展示
      * @param catelogId
      * @return
      */
@@ -55,7 +55,7 @@ public class AttrGroupController {
 
     /**
      * 获取分类属性分组
-     * 属性分组右侧列表展示
+     * 商品系统，平台属性，属性分组右侧列表展示
      */
     @GetMapping("/list/{catelogId}")
     //@RequiresPermissions("product:attrgroup:list")
@@ -68,7 +68,7 @@ public class AttrGroupController {
 
     /**
      * 获取属性分组的关联的所有属性
-     * 属性分组中的关联展示
+     * 商品系统，平台属性，属性分组中的关联展示
      * @param attrgroupId
      * @return
      */
@@ -80,7 +80,7 @@ public class AttrGroupController {
 
     /**
      * 获取属性分组没有关联的其他属性
-     * 属性分组，关联，新建关联后的展示
+     * 商品系统，平台属性，属性分组，关联，新建关联后的展示
      * 展示该分类下，展示没有被其他属性分组关联的规格参数
      * @param params
      * @param attrgroupId
@@ -94,7 +94,7 @@ public class AttrGroupController {
 
     /**
      * 添加属性与分组关联关系
-     * 属性分组，关联，新增关联功能
+     * 商品系统，平台属性，属性分组，关联，新增关联功能
      * @param vos
      * @return
      */
@@ -107,7 +107,7 @@ public class AttrGroupController {
 
     /**
      * 获取属性分组详情
-     * 属性分组，修改回显
+     * 商品系统，平台属性，属性分组，修改回显
      */
     @GetMapping("/info/{attrGroupId}")
     //@RequiresPermissions("product:attrgroup:info")
@@ -143,7 +143,7 @@ public class AttrGroupController {
     }
 
     /**
-     * 属性分组，删除功能
+     * 商品系统，平台属性，属性分组，删除功能
      */
     @RequestMapping("/delete")
     //@RequiresPermissions("product:attrgroup:delete")
@@ -155,7 +155,7 @@ public class AttrGroupController {
 
     /**
      * 删除属性与分组的关联关系
-     * 属性分组中，关联中的移除功能
+     * 商品系统，平台属性，属性分组，关联中的移除功能
      * @param vos
      * @return
      */

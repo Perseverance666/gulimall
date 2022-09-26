@@ -1,15 +1,13 @@
 package com.example.gulimall.ware.controller;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Map;
 
 //import org.apache.shiro.authz.annotation.RequiresPermissions;
+import com.example.gulimall.ware.vo.MergeVo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.example.gulimall.ware.entity.PurchaseEntity;
 import com.example.gulimall.ware.service.PurchaseService;
@@ -31,6 +29,30 @@ public class PurchaseController {
     @Autowired
     private PurchaseService purchaseService;
 
+
+    /**
+     * 合并采购需求
+     * 库存系统，采购单维护，采购需求，进行批量操作的合并整单功能
+     * @return
+     */
+    @PostMapping("/merge")
+    public R merge(@RequestBody MergeVo vo){
+        purchaseService.mergePurchase(vo);
+        return R.ok();
+    }
+    /**
+     * 查询未领取的采购单
+     * 库存系统，采购单维护，采购需求，进行批量操作的合并整单中，采购单的列表展示
+     * @param params
+     * @return
+     */
+    @GetMapping("/unreceive/list")
+    //@RequiresPermissions("ware:purchase:list")
+    public R unreceiveList(@RequestParam Map<String, Object> params){
+        PageUtils page = purchaseService.queryPageUnreceivePurchase(params);
+
+        return R.ok().put("page", page);
+    }
     /**
      * 列表
      */
@@ -60,6 +82,8 @@ public class PurchaseController {
     @RequestMapping("/save")
     //@RequiresPermissions("ware:purchase:save")
     public R save(@RequestBody PurchaseEntity purchase){
+        purchase.setCreateTime(new Date());
+        purchase.setUpdateTime(new Date());
 		purchaseService.save(purchase);
 
         return R.ok();
