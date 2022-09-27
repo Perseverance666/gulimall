@@ -1,9 +1,12 @@
 package com.example.gulimall.product.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 //import org.apache.shiro.authz.annotation.RequiresPermissions;
+import com.example.gulimall.product.entity.ProductAttrValueEntity;
+import com.example.gulimall.product.service.ProductAttrValueService;
 import com.example.gulimall.product.vo.AttrRespVo;
 import com.example.gulimall.product.vo.AttrVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +31,21 @@ import com.example.common.utils.R;
 public class AttrController {
     @Autowired
     private AttrService attrService;
+    @Autowired
+    private ProductAttrValueService productAttrValueService;
 
+
+    /**
+     * 获取spu规格
+     * 商品系统，商品维护，spu管理，点击规格按钮回显功能
+     * @param spuId
+     * @return
+     */
+    @GetMapping("/base/listforspu/{spuId}")
+    public R baseAttrListforspu(@PathVariable("spuId") Long spuId){
+        List<ProductAttrValueEntity> entities = productAttrValueService.baseAttrListforspu(spuId);
+        return R.ok().put("data",entities);
+    }
 
     /**
      * 商品系统，获取分类规格参数,attrType=base 规格参数右侧列表展示
@@ -37,7 +54,7 @@ public class AttrController {
      * @param catelogId
      * @return
      */
-    @GetMapping("{attrType}/list/{catelogId}")
+    @GetMapping("/{attrType}/list/{catelogId}")
     public R getAttrList(@RequestParam Map<String, Object> params,@PathVariable("catelogId") Long catelogId,
                           @PathVariable("attrType") String attrType){
         PageUtils page = attrService.queryAttrPage(params,catelogId,attrType);
@@ -91,6 +108,19 @@ public class AttrController {
         return R.ok();
     }
 
+    /**
+     * 修改商品规格
+     * 商品系统，商品维护，spu管理，点击规格按钮，进行修改功能
+     * @param spuId
+     * @param entities
+     * @return
+     */
+    @PostMapping("/update/{spuId}")
+    public R updateSpuAttr(@PathVariable("spuId") Long spuId,
+                           @RequestBody List<ProductAttrValueEntity> entities){
+        productAttrValueService.updateSpuAttr(spuId,entities);
+        return R.ok();
+    }
     /**
      * 删除
      */

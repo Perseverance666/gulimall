@@ -2,10 +2,12 @@ package com.example.gulimall.ware.controller;
 
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 //import org.apache.shiro.authz.annotation.RequiresPermissions;
 import com.example.gulimall.ware.vo.MergeVo;
+import com.example.gulimall.ware.vo.PurchaseDoneVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,7 +31,28 @@ public class PurchaseController {
     @Autowired
     private PurchaseService purchaseService;
 
+    /**
+     * 完成采购
+     * 模拟采购人员app实现完成采购功能
+     * @param vo
+     * @return
+     */
+    @PostMapping("/done")
+    public R finish(@RequestBody PurchaseDoneVo vo){
+        purchaseService.done(vo);
+        return R.ok();
+    }
 
+    /**
+     * 领取采购单
+     * 模拟采购人员app实现领取采购单功能
+     * @param ids
+     * @return
+     */
+    @PostMapping("/received")
+    public R received(@RequestBody List<Long> ids){
+        return purchaseService.received(ids);
+    }
     /**
      * 合并采购需求
      * 库存系统，采购单维护，采购需求，进行批量操作的合并整单功能
@@ -37,8 +60,7 @@ public class PurchaseController {
      */
     @PostMapping("/merge")
     public R merge(@RequestBody MergeVo vo){
-        purchaseService.mergePurchase(vo);
-        return R.ok();
+        return purchaseService.mergePurchase(vo);
     }
     /**
      * 查询未领取的采购单
