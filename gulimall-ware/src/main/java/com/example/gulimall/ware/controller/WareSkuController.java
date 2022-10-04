@@ -1,9 +1,11 @@
 package com.example.gulimall.ware.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 //import org.apache.shiro.authz.annotation.RequiresPermissions;
+import com.example.common.to.SkuHasStockTo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,6 +29,17 @@ public class WareSkuController {
     @Autowired
     private WareSkuService wareSkuService;
 
+    /**
+     * 根据skuIds来查询所有的sku是否有库存
+     * 商品上架时调用此方法
+     * @param skuIds
+     * @return
+     */
+    @PostMapping("/hasstock")
+    public R getSkusHasStock(@RequestBody List<Long> skuIds){
+        List<SkuHasStockTo> tos = wareSkuService.getSkusHasStock(skuIds);
+        return R.ok().put("data",tos);
+    }
     /**
      * 查询商品库存
      * 库存系统，商品库存，列表展示

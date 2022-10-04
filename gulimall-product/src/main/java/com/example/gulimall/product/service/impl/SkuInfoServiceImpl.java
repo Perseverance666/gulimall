@@ -6,6 +6,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -73,6 +74,19 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoDao, SkuInfoEntity> i
 
         IPage<SkuInfoEntity> page = this.page(new Query<SkuInfoEntity>().getPage(params),lqw);
         return new PageUtils(page);
+    }
+
+    /**
+     * 根据spuId查询对应sku信息
+     * @param spuId
+     * @return
+     */
+    @Override
+    public List<SkuInfoEntity> getSkusBySpuId(Long spuId) {
+        LambdaQueryWrapper<SkuInfoEntity> lqw = new LambdaQueryWrapper<>();
+        lqw.eq(spuId != null,SkuInfoEntity::getSpuId,spuId);
+        List<SkuInfoEntity> skuInfoEntities = this.list(lqw);
+        return skuInfoEntities;
     }
 
 }

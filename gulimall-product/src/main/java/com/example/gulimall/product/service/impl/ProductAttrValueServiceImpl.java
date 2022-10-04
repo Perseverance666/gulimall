@@ -35,6 +35,7 @@ public class ProductAttrValueServiceImpl extends ServiceImpl<ProductAttrValueDao
     /**
      * 获取spu规格
      * 商品系统，商品维护，spu管理，点击规格按钮回显功能
+     * 商品上架时也调用此方法
      * @param spuId
      * @return
      */

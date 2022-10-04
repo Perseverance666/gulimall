@@ -1,6 +1,7 @@
 package com.example.gulimall.ware.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.example.common.to.SkuHasStockTo;
 import com.example.common.utils.R;
 import com.example.gulimall.ware.feign.ProductFeignService;
 import org.apache.commons.lang.StringUtils;
@@ -9,7 +10,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import java.util.stream.Collectors;
+
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.common.utils.PageUtils;
@@ -88,6 +90,24 @@ public class WareSkuServiceImpl extends ServiceImpl<WareSkuDao, WareSkuEntity> i
             this.baseMapper.addStock(skuId,wareId,skuNum);
         }
 
+    }
+
+    /**
+     * 根据skuIds来查询所有的sku是否有库存
+     * 商品上架时调用此方法
+     * @param skuIds
+     * @return
+     */
+    @Override
+    public List<SkuHasStockTo> getSkusHasStock(List<Long> skuIds) {
+        List<SkuHasStockTo> collect = skuIds.stream().map(skuId -> {
+            SkuHasStockTo to = new SkuHasStockTo();
+            Long count = this.baseMapper.getSkuStock(skuId);
+            to.setSkuId(skuId);
+            to.setHasStock(count==null ? false : count>0);
+            return to;
+        }).collect(Collectors.toList());
+        return collect;
     }
 
 }
