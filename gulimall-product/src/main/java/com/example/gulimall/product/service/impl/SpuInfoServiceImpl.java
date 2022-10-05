@@ -266,7 +266,7 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
 
         //3、封装SkuEsModel
         List<Long> skuIds = skuInfoEntities.stream().map(SkuInfoEntity::getSkuId).collect(Collectors.toList());
-        //TODO 发送远程调用，查询库存系统是否有库存
+        //发送远程调用，查询库存系统是否有库存
         Map<Long, Boolean> stockMap = null;
         try{            //远程调用，为防止异常，使用try catch
             R skusHasStock = wareFeignService.getSkusHasStock(skuIds);
@@ -305,7 +305,7 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
             return esModel;
         }).collect(Collectors.toList());
 
-        //TODO 将数据发送给es进行保存
+        //4、 将数据发送给es进行保存
         R r = searchFeignService.productStatusUp(esModels);
         if(r.getCode() == 0){
             //修改当前spu状态
@@ -316,7 +316,24 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
             this.updateById(spuInfoEntity);
         } else {
             //远程调用失败
-            //TODO 7、重复调用？接口幂等性:重试机制
+            //TODO 7、重复调用？接口幂等性；重试机制？xxx
+            //Feign调用流程
+            /**
+             * 1、构造请求数据，将对象转为json；
+             *      RequestTemplate template = buildTemplateFromArgs.create(argv);
+             * 2、发送请求进行执行（执行成功会解码响应数据）：
+             *      executeAndDecode(template);
+             * 3、执行请求会有重试机制
+             *      while(true){
+             *          try{
+             *            executeAndDecode(template);
+             *          }catch(){
+             *              try{retryer.continueOrPropagate(e);}catch(){throw ex;}
+             *              continue;
+             *          }
+             *
+             *      }
+             */
         }
 
     }

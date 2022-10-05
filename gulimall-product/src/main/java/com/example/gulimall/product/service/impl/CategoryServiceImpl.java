@@ -1,6 +1,8 @@
 package com.example.gulimall.product.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.example.gulimall.product.service.CategoryBrandRelationService;
+import com.example.gulimall.product.vo.Catelog2Vo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -116,6 +118,74 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         categoryBrandRelationService.updateCategory(category.getCatId(),category.getName());
 
         //TODO 更新其他关联
+    }
+
+    /**
+     * 查询所有一级分类
+     * @return
+     */
+    @Override
+    public List<CategoryEntity> getLevel1Categories() {
+        LambdaQueryWrapper<CategoryEntity> lqw = new LambdaQueryWrapper<>();
+        lqw.eq(CategoryEntity::getCatLevel,1);
+        List<CategoryEntity> entities = this.baseMapper.selectList(lqw);
+        return entities;
+    }
+
+    /**
+     * 返回map类型数据，key为一级分类id，value为Catelog2Vo类型数据
+     * @return
+     */
+    @Override
+    public Map<String,List<Catelog2Vo>>  getCatalogJson() {
+        //1、查询所有一级分类
+        List<CategoryEntity> level1Categories = this.getLevel1Categories();
+        Map<String, List<Catelog2Vo>> map = null;
+        if(level1Categories != null){
+
+            //2、封装成map，key为一级分类id，value为Catelog2Vo类型数据
+            map = level1Categories.stream().collect(Collectors.toMap(k -> k.getCatId().toString(), v -> {
+                //查询该一级分类下的二级分类
+                LambdaQueryWrapper<CategoryEntity> lqw2 = new LambdaQueryWrapper<>();
+                lqw2.eq(CategoryEntity::getParentCid, v.getCatId());
+                List<CategoryEntity> level2Categories = baseMapper.selectList(lqw2);
+
+                //将所有2级分类封装成Catelog2Vo
+                List<Catelog2Vo> catelog2Vos = null;
+                if (level2Categories != null) {
+                    catelog2Vos = level2Categories.stream().map(l2 -> {
+                        Catelog2Vo catelog2Vo = new Catelog2Vo();
+                        catelog2Vo.setCatalog1Id(v.getCatId().toString());
+                        catelog2Vo.setId(l2.getCatId().toString());
+                        catelog2Vo.setName(l2.getName());
+
+                        //查询该2级分类下的所有3级分类
+                        LambdaQueryWrapper<CategoryEntity> lqw3 = new LambdaQueryWrapper<>();
+                        lqw3.eq(CategoryEntity::getParentCid,l2.getCatId());
+                        List<CategoryEntity> level3Categories= baseMapper.selectList(lqw3);
+                        List<Catelog2Vo.Catelog3Vo> catelog3Vos = null;
+                        if(level3Categories != null){
+                            //封装Catelog3Vo类型数据
+                            catelog3Vos = level3Categories.stream().map(l3 -> {
+                                Catelog2Vo.Catelog3Vo catelog3Vo = new Catelog2Vo.Catelog3Vo();
+                                catelog3Vo.setCatalog2Id(l2.getCatId().toString());
+                                catelog3Vo.setId(l3.getCatId().toString());
+                                catelog3Vo.setName(l3.getName());
+                                return catelog3Vo;
+                            }).collect(Collectors.toList());
+                        }
+
+                        catelog2Vo.setCatalog3List(catelog3Vos);
+                        return catelog2Vo;
+                    }).collect(Collectors.toList());
+                }
+
+                return catelog2Vos;
+
+            }));
+        }
+
+        return map;
     }
 
 
