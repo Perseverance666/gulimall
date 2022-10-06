@@ -138,17 +138,18 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
      */
     @Override
     public Map<String,List<Catelog2Vo>>  getCatalogJson() {
+        //TODO 优化：将数据库由原来的多次查询变为一次查询
+        List<CategoryEntity> selectList = baseMapper.selectList(null);
+
         //1、查询所有一级分类
-        List<CategoryEntity> level1Categories = this.getLevel1Categories();
+        List<CategoryEntity> level1Categories = getCategoryEntitiesByParentCid(selectList,0L);
         Map<String, List<Catelog2Vo>> map = null;
         if(level1Categories != null){
 
             //2、封装成map，key为一级分类id，value为Catelog2Vo类型数据
             map = level1Categories.stream().collect(Collectors.toMap(k -> k.getCatId().toString(), v -> {
                 //查询该一级分类下的二级分类
-                LambdaQueryWrapper<CategoryEntity> lqw2 = new LambdaQueryWrapper<>();
-                lqw2.eq(CategoryEntity::getParentCid, v.getCatId());
-                List<CategoryEntity> level2Categories = baseMapper.selectList(lqw2);
+                List<CategoryEntity> level2Categories = getCategoryEntitiesByParentCid(selectList,v.getCatId());
 
                 //将所有2级分类封装成Catelog2Vo
                 List<Catelog2Vo> catelog2Vos = null;
@@ -160,9 +161,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
                         catelog2Vo.setName(l2.getName());
 
                         //查询该2级分类下的所有3级分类
-                        LambdaQueryWrapper<CategoryEntity> lqw3 = new LambdaQueryWrapper<>();
-                        lqw3.eq(CategoryEntity::getParentCid,l2.getCatId());
-                        List<CategoryEntity> level3Categories= baseMapper.selectList(lqw3);
+                        List<CategoryEntity> level3Categories= getCategoryEntitiesByParentCid(selectList,l2.getCatId());
                         List<Catelog2Vo.Catelog3Vo> catelog3Vos = null;
                         if(level3Categories != null){
                             //封装Catelog3Vo类型数据
@@ -186,6 +185,13 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         }
 
         return map;
+    }
+
+
+    private List<CategoryEntity> getCategoryEntitiesByParentCid(List<CategoryEntity> selectList,Long parent_cid) {
+        List<CategoryEntity> collect = selectList.stream().filter(item -> item.getParentCid() == parent_cid)
+                .collect(Collectors.toList());
+        return collect;
     }
 
 
