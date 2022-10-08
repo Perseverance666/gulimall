@@ -24,6 +24,10 @@ spring:
     host: 192.168.138.102
     port: 6379
 
+  cache:
+    type: redis
+
+
 mybatis-plus:
   mapper-locations: classpath:/mapper/**/*.xml
   global-config:
