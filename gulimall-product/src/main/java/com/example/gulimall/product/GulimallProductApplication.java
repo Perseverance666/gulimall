@@ -108,7 +108,6 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
  *          ->就会应用到当前RedisCacheManager管理的所有缓存分区中
  */
 
-@EnableCaching
 @EnableFeignClients(basePackages = "com.example.gulimall.product.feign")
 @EnableDiscoveryClient
 @MapperScan("com.example.gulimall.product.dao")
