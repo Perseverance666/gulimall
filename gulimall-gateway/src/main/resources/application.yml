@@ -10,6 +10,7 @@ spring:
         server-addr: 127.0.0.1:8848
     gateway:
       routes:
+#----------------------以下是后台管理系统的路由规则-------------------
         - id: product_route
           uri: lb://gulimall-product
           predicates:
@@ -45,9 +46,14 @@ spring:
           filters:
             - RewritePath=/api/(?<segment>.*),/renren-fast/$\{segment}
 
+#--------------------以下是关于网页的路由规则--------------------------------
         - id: gulimall_host_route
           uri: lb://gulimall-product
           predicates:
-            - Host=**.gulimall.com
+            - Host=gulimall.com
 
+        - id: gulimall_search_route
+          uri: lb://gulimall-search
+          predicates:
+            - Host=search.gulimall.com
 

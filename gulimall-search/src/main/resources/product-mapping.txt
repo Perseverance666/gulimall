@@ -23,7 +23,7 @@ PUT product
       "saleCount": {
         "type": "long"
       },
-      "hosStock": {
+      "hasStock": {
         "type": "boolean"
       },
       "hotScore": {
@@ -32,7 +32,7 @@ PUT product
       "brandId": {
         "type": "long"
       },
-      "catelogId": {
+      "catalogId": {
         "type": "long"
       },
       "brandName": {
@@ -45,7 +45,7 @@ PUT product
         "index": false,
         "doc_values": false
       },
-      "catelogName": {
+      "catalogName": {
         "type": "keyword",
         "index": false,
         "doc_values": false
