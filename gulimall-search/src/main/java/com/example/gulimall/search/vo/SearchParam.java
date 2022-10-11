@@ -30,13 +30,12 @@ public class SearchParam {
      *  skuPrice=1_500/_500/500_
      *  brandId=1
      *  attrs=2_5存:6寸
-     *
      */
-    private Integer hasStock;    //是否只显示有货  v 0（无库存）1（有库存）
-    private String skuPrice;     //价格区间查询  v
-    private List<Long> brandId;  //按照品牌进行查询，可以多选  v
-    private List<String> attrs;  //按照属性进行筛选  v
-    private Integer pageNum = 1; //页码
+    private Integer hasStock;       //是否只显示有货  v 0（无库存）1（有库存）
+    private String skuPrice;        //价格区间查询  v
+    private List<Long> brandId;     //按照品牌进行查询，可以多选  v
+    private List<String> attrs;     //按照属性进行筛选  v
+    private Integer pageNum = 1;    //页码
 
     private String _queryString;//原生的所有查询条件
 
