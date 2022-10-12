@@ -187,7 +187,7 @@ public class MallSearchServiceImpl implements MallSearchService {
         //3、3）、1、1） attr_name_agg
         attr_id_agg.subAggregation(AggregationBuilders.terms("attr_name_agg").field("attrs.attrName").size(1));
         //3、3）、1、1） attr_value_agg
-        attr_id_agg.subAggregation(AggregationBuilders.terms("attr_value_agg").field("attrs.attrValue").size(1));
+        attr_id_agg.subAggregation(AggregationBuilders.terms("attr_value_agg").field("attrs.attrValue").size(10));
         attr_agg.subAggregation(attr_id_agg);
         sourceBuilder.aggregation(attr_agg);
 
@@ -235,6 +235,12 @@ public class MallSearchServiceImpl implements MallSearchService {
         int totalPages = (int)total % EsConstant.PRODUCT_PAGE_SIZE == 0 ?
                 (int)total / EsConstant.PRODUCT_PAGE_SIZE : ((int)total / EsConstant.PRODUCT_PAGE_SIZE + 1);
         result.setTotalPages(totalPages);
+        //2、4分页信息-导航页码
+        List<Integer> pageNavs = new ArrayList<>();
+        for (int i = 1; i <= totalPages; i++) {
+            pageNavs.add(i);
+        }
+        result.setPageNavs(pageNavs);
 
         //------------------------下面全是从聚合信息中获取到的--------------------------
 
