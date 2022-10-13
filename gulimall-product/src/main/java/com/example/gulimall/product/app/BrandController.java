@@ -1,19 +1,17 @@
 package com.example.gulimall.product.app;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 //import org.apache.shiro.authz.annotation.RequiresPermissions;
 import com.example.common.valid.group.AddGroup;
 import com.example.common.valid.group.UpdateGroup;
 import com.example.common.valid.group.UpdateStatusGroup;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.example.gulimall.product.entity.BrandEntity;
 import com.example.gulimall.product.service.BrandService;
@@ -58,6 +56,15 @@ public class BrandController {
 
         return R.ok().put("brand", brand);
     }
+
+    @GetMapping("/infos")
+    //@RequiresPermissions("product:brand:info")
+    public R infos(@RequestParam("brandIds") List<Long> brandIds){
+        List<BrandEntity> brands = brandService.listByIds(brandIds);
+
+        return R.ok().put("brands", brands);
+    }
+
 
     /**
      * 商品系统，品牌管理，新增功能

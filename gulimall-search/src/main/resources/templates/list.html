@@ -738,34 +738,42 @@
 
 <!--手机-->
 <div class="JD_ipone">
-    <div class="JD_ipone_bar">
+    <div class="JD_ipone_bar" th:with="catalog3Id=${param.catalog3Id}">
         <div class="JD_ipone_one a">
             <a href="/static/search/#">手机</a>
         </div>
-        <i><img src="/static/search/image/right-@1x.png" alt=""></i>
-        <div class="JD_ipone_one b">
-            <a href="/static/search/#" class="qqq">手机通讯录 <img src="/static/search/image/down-@1x.png" alt=""></a>
-            <div>
-                <a href="/static/search/#">手机通讯</a>
-                <a href="/static/search/#">运营商</a>
-                <a href="/static/search/#">手机配件</a>
-                <a href="/static/search/#">手机服务</a>
+        <div th:if="${!#strings.isEmpty(catalog3Id)}">
+            <i><img src="/static/search/image/right-@1x.png" alt=""></i>
+            <div class="JD_ipone_one b">
+                <a href="/static/search/#" class="qqq">手机通讯录 <img src="/static/search/image/down-@1x.png" alt=""></a>
+                <div>
+                    <a href="/static/search/#">手机通讯</a>
+                    <a href="/static/search/#">运营商</a>
+                    <a href="/static/search/#">手机配件</a>
+                    <a href="/static/search/#">手机服务</a>
+                </div>
+            </div>
+            <i><img src="/static/search/image/right-@1x.png" alt=""></i>
+            <div class="JD_ipone_one c">
+                <a href="/static/search/#" class="qqq">手机 <img src="/static/search/image/down-@1x.png" alt=""></a>
+                <div>
+                    <a href="/static/search/#">手机</a>
+                    <a href="/static/search/#">老人机</a>
+                    <a href="/static/search/#">对讲机</a>
+                    <a href="/static/search/#">女性手机</a>
+                    <a href="/static/search/#">超续航手机</a>
+                    <a href="/static/search/#">全面屏手机</a>
+                    <a href="/static/search/#">拍照手机</a>
+                    <a href="/static/search/#">游戏手机</a>
+                </div>
             </div>
         </div>
-        <i><img src="/static/search/image/right-@1x.png" alt=""></i>
+
         <div class="JD_ipone_one c">
-            <a href="/static/search/#" class="qqq">手机 <img src="/static/search/image/down-@1x.png" alt=""></a>
-            <div>
-                <a href="/static/search/#">手机</a>
-                <a href="/static/search/#">老人机</a>
-                <a href="/static/search/#">对讲机</a>
-                <a href="/static/search/#">女性手机</a>
-                <a href="/static/search/#">超续航手机</a>
-                <a href="/static/search/#">全面屏手机</a>
-                <a href="/static/search/#">拍照手机</a>
-                <a href="/static/search/#">游戏手机</a>
-            </div>
+            <!--            遍历面包屑功能-->
+            <a th:href="${nav.link}" th:each="nav:${result.navs}"><span th:text="${nav.navName}"></span>：<span th:text="${nav.navValue}"></span> ×</a>
         </div>
+
         <i><img src="/static/search/image/right-@1x.png" alt=""></i>
     </div>
 </div>
@@ -779,9 +787,9 @@
                 <h3><b>手机</b><em>商品筛选</em></h3>
                 <div class="st-ext">共&nbsp;<span>10135</span>个商品</div>
             </div>
-            <div class="JD_nav_logo">
+            <div class="JD_nav_logo"  th:with="brandId= ${param.brandId},catalog3Id= ${param.catalog3Id}" >
                 <!--品牌-->
-                <div class="JD_nav_wrap">
+                <div th:if="${#strings.isEmpty(brandId)}" class="JD_nav_wrap">
                     <div class="sl_key">
                         <span><b>品牌：</b></span>
                     </div>
@@ -789,7 +797,7 @@
                         <div class="sl_value_logo">
                             <ul>
                                 <li th:each="brand:${result.brands}">
-                                    <a th:href="${'javascript:searchProducts(&quot;brandId&quot;,'+brand.brandId+')'}">
+                                    <a th:href="${'javascript:searchProducts(&quot;brandId&quot;,'+brand.brandId+',false)'}">
                                         <img th:src="${brand.brandImg}" alt="">
                                         <div th:text="${brand.brandName}">
                                             华为(HUAWEI)
@@ -813,14 +821,14 @@
                     </div>
                 </div>
                 <!--分类-->
-                <div class="JD_pre">
+                <div th:if="${#strings.isEmpty(catalog3Id)}" class="JD_pre">
                     <div class="sl_key">
                         <span><b>分类：</b></span>
                     </div>
                     <div class="sl_value">
                         <ul>
                             <li th:each="catalog:${result.catalogs}">
-                                <a th:href="${'javascript:searchProducts(&quot;catalog3Id&quot;,'+catalog.catalogId+')'}"
+                                <a th:href="${'javascript:searchProducts(&quot;catalog3Id&quot;,'+catalog.catalogId+',false)'}"
                                    th:text="${catalog.catalogName}">5.56英寸及以上</a>
                             </li>
                         </ul>
@@ -840,14 +848,14 @@
                 </div>
 
                 <!--其他的所有需要展示的属性-->
-                <div class="JD_pre" th:each="attr:${result.attrs}">
+                <div class="JD_pre" th:each="attr:${result.attrs}"  th:if="${!#lists.contains(result.attrIds, attr.attrId)}">
                     <div class="sl_key">
                         <span th:text="${attr.attrName}">屏幕尺寸：</span>
                     </div>
                     <div class="sl_value">
                         <ul>
                             <li th:each="val:${attr.attrValue}">
-                                <a th:href="${'javascript:searchProducts(&quot;attrs&quot;,&quot;'+attr.attrId+'_'+val+'&quot;)'}"
+                                <a th:href="${'javascript:searchProducts(&quot;attrs&quot;,&quot;'+attr.attrId+'_'+val+'&quot;,true)'}"
                                    th:text="${val}">5.56英寸及以上</a></li>
                         </ul>
                     </div>
@@ -1168,8 +1176,8 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="/static/search/#">
-                                        <i></i>
+                                    <a th:with="check = ${param.hasStock}">
+                                        <input id="showHasStock" type="checkbox" th:checked="${#strings.equals(check,'1')}">
                                         仅显示有货
                                     </a>
                                 </li>
@@ -1231,13 +1239,13 @@
                     <div class="filter_page">
                         <div class="page_wrap">
                             <span class="page_span1">
-                               <a class="page_a" th:attr="pn=${result.pageNum - 1}"
+                               <a href="" class="page_a" th:attr="pn=${result.pageNum - 1}"
                                   th:if="${result.pageNum>1}">
                                     < 上一页</a>
                                <a class="page_a"
                                   th:attr="pn=${nav},style=${nav == result.pageNum?'border: 0;color:#ee2222;background: #fff':''}"
                                   th:each="nav:${result.pageNavs}">[[${nav}]]</a>
-                               <a class="page_a" th:attr="pn=${result.pageNum + 1}"
+                               <a href="" class="page_a" th:attr="pn=${result.pageNum + 1}"
                                   th:if="${result.pageNum<result.totalPages}">
                                     下一页 ></a>
                             </span>
@@ -1994,19 +2002,14 @@
         $(this).css("color", "#727272")
     })
 
-    function searchProducts(name, val) {
+    function searchProducts(name, val, flag) {
         //原来的页面
-        var href = location.href + "";
-        if (href.indexOf("?") != -1) {          //不是第一个参数，拼接
-            location.href = location.href + "&" + name + "=" + val;
-        } else {                          //是第一个参数加 ？
-            location.href = location.href + "?" + name + "=" + val;
-        }
+        location.href = replaceAndAddParamVal(location.href,name,val,flag)
 
     }
 
     function searchByKeyword() {
-        searchProducts("keyword", $("#keyword_input").val());
+        location.href = replaceAndAddParamVal(location.href,"keyword",$("#keyword_input").val(),false);
     }
 
     $(".page_a").click(function () {
@@ -2096,6 +2099,28 @@
             $(ele).text(text);
         }
     }
+
+    $("#skuPriceSearchBtn").click(function () {
+        //1、拼上价格区间的查询条件
+        var from = $("#skuPriceFrom").val();
+        var to = $("#skuPriceTo").val();
+
+        var query = from + "_" + to;
+
+        location.href = replaceAndAddParamVal(location.href,"skuPrice",query);
+    });
+
+    $("#showHasStock").change(function () {
+        if($(this).prop('checked')){
+            location.href = replaceAndAddParamVal(location.href,"hasStock",1);
+        }else{
+            //没选中
+            var re = eval('/(&hasStock=)([^&]*)/gi');
+            location.href = (location.href+"").replace(re,'');
+        }
+        return false;
+    })
+
 </script>
 </body>
 </html>

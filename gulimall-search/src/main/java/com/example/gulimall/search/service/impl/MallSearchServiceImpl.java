@@ -1,10 +1,15 @@
 package com.example.gulimall.search.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.example.common.es.SkuEsModel;
+import com.example.common.utils.R;
 import com.example.gulimall.search.config.GulimallElasticSearchConfig;
 import com.example.gulimall.search.constant.EsConstant;
+import com.example.gulimall.search.feign.ProductFeignService;
 import com.example.gulimall.search.service.MallSearchService;
+import com.example.gulimall.search.vo.AttrResponseVo;
+import com.example.gulimall.search.vo.BrandVo;
 import com.example.gulimall.search.vo.SearchParam;
 import com.example.gulimall.search.vo.SearchResult;
 import org.apache.commons.lang.StringUtils;
@@ -31,6 +36,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -43,6 +50,8 @@ import java.util.stream.Collectors;
 public class MallSearchServiceImpl implements MallSearchService {
     @Autowired
     private RestHighLevelClient client;
+    @Autowired
+    private ProductFeignService productFeignService;
 
     /**
      * 根据页面请求参数SearchParam，去es中查询数据，并将结果封装成SearchResult返回
@@ -301,12 +310,91 @@ public class MallSearchServiceImpl implements MallSearchService {
             }
             attrVo.setAttrValue(attrValues);
 
+
             attrVos.add(attrVo);
         }
 
         result.setAttrs(attrVos);
 
+        //6.构建面包屑导航功能
+        //6.1、属性
+        if(param.getAttrs() != null && param.getAttrs().size() > 0){
+            List<SearchResult.NavVo> navs = param.getAttrs().stream().map(attr -> {
+                SearchResult.NavVo navVo = new SearchResult.NavVo();
+                //attrs=2_5存:6寸
+                String[] s = attr.split("_");
+                //6.1.1、设置面包屑导航数据中的navName
+                R r = productFeignService.attrInfo(Long.parseLong(s[0]));
+
+                //该属性已经用来筛选了，前端可不显示了
+                result.getAttrIds().add(Long.parseLong(s[0]));
+
+                if(r.getCode() == 0){
+                    AttrResponseVo data = r.getData("attr", new TypeReference<AttrResponseVo>() {
+                    });
+                    navVo.setNavName(data.getAttrName());
+                }else {
+                    //查询失败，将attrId设置为navName
+                    navVo.setNavName(s[0]);
+                }
+                //6.1.2、设置面包屑导航数据中的navValue
+                navVo.setNavValue(s[1]);
+                //6.1.3、设置面包屑导航数据中的link    attrs= 15_海思（Hisilicon）
+                String replace = replaceQueryString(param, "attrs",attr);
+                navVo.setLink("http://search.gulimall.com/list.html?"+replace);
+
+                return navVo;
+            }).collect(Collectors.toList());
+            result.setNavs(navs);
+        }
+
+        //6.2品牌
+        if(param.getBrandId() != null && param.getBrandId().size() > 0){
+            List<SearchResult.NavVo> navs = result.getNavs();
+            SearchResult.NavVo navVo = new SearchResult.NavVo();
+            navVo.setNavName("品牌");
+            //远程调用查询所有品牌
+            R r = productFeignService.brandInfos(param.getBrandId());
+            if(r.getCode() == 0){
+                List<BrandVo> brands = r.getData("brands", new TypeReference<List<BrandVo>>() {
+                });
+                StringBuffer stringBuffer = new StringBuffer();
+                String replace = "";
+                for (BrandVo brand : brands) {
+                    stringBuffer.append(brand.getName()+";");
+                    replace = replaceQueryString(param, "brandId", brand.getBrandId() + "");
+                }
+                navVo.setNavValue(stringBuffer.toString());
+                navVo.setLink("http://search.gulimall.com/list.html?"+replace);
+            }
+
+            navs.add(navVo);
+        }
+
+        //TODO 分类：不需要导航取消
+
 
         return result;
+    }
+
+    /**
+     * 将请求参数中的key=value删除
+     * @param param
+     * @param value
+     * @param key
+     * @return
+     */
+    private String replaceQueryString(SearchParam param,String key, String value) {
+        //进行中文编码
+        String encode = null;
+        try {
+            encode = URLEncoder.encode(value, "UTF-8");
+            //浏览器对空格编码和java不一样
+            encode = encode.replace("+","%20");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        String replace = param.get_queryString().replace("&"+key+"=" + encode, "");
+        return replace;
     }
 }

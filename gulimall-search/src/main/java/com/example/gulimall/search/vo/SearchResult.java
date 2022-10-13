@@ -32,14 +32,14 @@ public class SearchResult {
 
     //面包屑导航数据
     private List<NavVo> navs = new ArrayList<>();
+    //哪些属性已经被用来筛选了，前端可不显示了
     private List<Long> attrIds = new ArrayList<>();
-
 
     @Data
     public static class NavVo{
-        private String navName;
-        private String navValue;
-        private String link;
+        private String navName;         //面包屑数据名字
+        private String navValue;        //面包屑数据值
+        private String link;            //取消面包屑后，跳转的地址
     }
 
     @Data
