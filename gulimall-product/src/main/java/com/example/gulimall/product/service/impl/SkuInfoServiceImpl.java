@@ -1,8 +1,14 @@
 package com.example.gulimall.product.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.example.gulimall.product.entity.SkuImagesEntity;
+import com.example.gulimall.product.entity.SpuInfoDescEntity;
 import com.example.gulimall.product.entity.SpuInfoEntity;
+import com.example.gulimall.product.service.*;
+import com.example.gulimall.product.vo.SkuItemVo;
+import com.example.gulimall.product.vo.SpuItemAttrGroupVo;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -16,11 +22,16 @@ import com.example.common.utils.Query;
 
 import com.example.gulimall.product.dao.SkuInfoDao;
 import com.example.gulimall.product.entity.SkuInfoEntity;
-import com.example.gulimall.product.service.SkuInfoService;
 
 
 @Service("skuInfoService")
 public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoDao, SkuInfoEntity> implements SkuInfoService {
+    @Autowired
+    private SkuImagesService skuImagesService;
+    @Autowired
+    private SpuInfoDescService spuInfoDescService;
+    @Autowired
+    private AttrGroupService attrGroupService;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -87,6 +98,41 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoDao, SkuInfoEntity> i
         lqw.eq(spuId != null,SkuInfoEntity::getSpuId,spuId);
         List<SkuInfoEntity> skuInfoEntities = this.list(lqw);
         return skuInfoEntities;
+    }
+
+    /**
+     * 页面商品详情中将指定sku相关的所有信息进行展示
+     * 要进行异步调用,使用CompletableFuture
+     * @param skuId
+     * @return
+     */
+    @Override
+    public SkuItemVo item(Long skuId) {
+        SkuItemVo skuItemVo = new SkuItemVo();
+        //1、sku基本信息获取  pms_sku_info
+        SkuInfoEntity info = this.getById(skuId);
+        skuItemVo.setInfo(info);
+        Long spuId = info.getSpuId();
+        Long catalogId = info.getCatalogId();
+
+        //2、sku的图片信息  pms_sku_images
+        LambdaQueryWrapper<SkuImagesEntity> lqw = new LambdaQueryWrapper<>();
+        lqw.eq(SkuImagesEntity::getSkuId,skuId);
+        List<SkuImagesEntity> images = skuImagesService.list(lqw);
+        skuItemVo.setImages(images);
+        //3、获取spu的销售属性组合
+
+
+
+        //4、获取spu的介绍
+        SpuInfoDescEntity desp = spuInfoDescService.getById(spuId);
+        skuItemVo.setDesp(desp);
+
+        //5、获取spu的规格参数信息
+        List<SpuItemAttrGroupVo> groupAttrs = attrGroupService.getAttrGroupWithAttrsBySpuId(spuId,catalogId);
+        skuItemVo.setGroupAttrs(groupAttrs);
+
+        return skuItemVo;
     }
 
 }

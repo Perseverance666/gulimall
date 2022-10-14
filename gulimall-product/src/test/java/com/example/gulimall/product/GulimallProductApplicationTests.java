@@ -1,9 +1,11 @@
 package com.example.gulimall.product;
 
 
+import com.example.gulimall.product.dao.AttrGroupDao;
 import com.example.gulimall.product.entity.BrandEntity;
 import com.example.gulimall.product.service.BrandService;
 import com.example.gulimall.product.service.CategoryService;
+import com.example.gulimall.product.vo.SpuItemAttrGroupVo;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,6 +17,7 @@ import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -30,6 +33,8 @@ public class GulimallProductApplicationTests {
     private StringRedisTemplate stringRedisTemplate;
     @Autowired
     private RedissonClient redissonClient;
+    @Autowired
+    private AttrGroupDao attrGroupDao;
 
     @Test
     public void test1() {
@@ -37,6 +42,12 @@ public class GulimallProductApplicationTests {
         brandEntity.setBrandId(1L);
         brandEntity.setDescript("华为。。");
         brandService.updateById(brandEntity);
+    }
+
+    @Test
+    public void test2() {
+        List<SpuItemAttrGroupVo> list = attrGroupDao.getAttrGroupWithAttrsBySpuId(100L, 225L);
+        System.out.println(list);
     }
 
     @Test

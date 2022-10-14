@@ -30,7 +30,7 @@ public class IndexController {
     private StringRedisTemplate stringRedisTemplate;
 
     /**
-     * 将一级分类展示到页面中
+     * 将一级分类展示到首页上
      * @param model
      * @return
      */

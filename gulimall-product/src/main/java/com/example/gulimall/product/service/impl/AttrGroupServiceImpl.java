@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.example.gulimall.product.entity.AttrEntity;
 import com.example.gulimall.product.service.AttrService;
 import com.example.gulimall.product.vo.AttrGroupWithAttrsVo;
+import com.example.gulimall.product.vo.SpuItemAttrGroupVo;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,7 +73,7 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
      * @return
      */
     @Override
-    public List<AttrGroupWithAttrsVo>  getAttrGroupWithAttrByCatelogId(Long catelogId) {
+    public List<AttrGroupWithAttrsVo>  getAttrGroupWithAttrsByCatelogId(Long catelogId) {
         //根据分类查询所有分组
         LambdaQueryWrapper<AttrGroupEntity> lqw = new LambdaQueryWrapper<>();
         lqw.eq(catelogId != null,AttrGroupEntity::getCatelogId,catelogId);
@@ -88,6 +89,19 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
             return vo;
         }).collect(Collectors.toList());
 
+        return vos;
+    }
+
+    /**
+     * 根据spuId，查询分组名，属性名，属性值，封装成SpuItemAttrGroupVo
+     * 这里用联合查询left join
+     * @param spuId
+     * @param catalogId
+     * @return
+     */
+    @Override
+    public List<SpuItemAttrGroupVo> getAttrGroupWithAttrsBySpuId(Long spuId, Long catalogId) {
+        List<SpuItemAttrGroupVo> vos = this.baseMapper.getAttrGroupWithAttrsBySpuId(spuId,catalogId);
         return vos;
     }
 
