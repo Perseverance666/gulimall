@@ -5,6 +5,7 @@ import com.example.gulimall.product.entity.SkuImagesEntity;
 import com.example.gulimall.product.entity.SpuInfoDescEntity;
 import com.example.gulimall.product.entity.SpuInfoEntity;
 import com.example.gulimall.product.service.*;
+import com.example.gulimall.product.vo.SkuItemSaleAttrVo;
 import com.example.gulimall.product.vo.SkuItemVo;
 import com.example.gulimall.product.vo.SpuItemAttrGroupVo;
 import org.apache.commons.lang.StringUtils;
@@ -14,6 +15,10 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ThreadPoolExecutor;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -32,6 +37,11 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoDao, SkuInfoEntity> i
     private SpuInfoDescService spuInfoDescService;
     @Autowired
     private AttrGroupService attrGroupService;
+    @Autowired
+    private SkuSaleAttrValueService skuSaleAttrValueService;
+    @Autowired
+    private ThreadPoolExecutor executor;
+
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -107,31 +117,45 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoDao, SkuInfoEntity> i
      * @return
      */
     @Override
-    public SkuItemVo item(Long skuId) {
+    public SkuItemVo item(Long skuId) throws ExecutionException, InterruptedException {
         SkuItemVo skuItemVo = new SkuItemVo();
-        //1、sku基本信息获取  pms_sku_info
-        SkuInfoEntity info = this.getById(skuId);
-        skuItemVo.setInfo(info);
-        Long spuId = info.getSpuId();
-        Long catalogId = info.getCatalogId();
 
-        //2、sku的图片信息  pms_sku_images
-        LambdaQueryWrapper<SkuImagesEntity> lqw = new LambdaQueryWrapper<>();
-        lqw.eq(SkuImagesEntity::getSkuId,skuId);
-        List<SkuImagesEntity> images = skuImagesService.list(lqw);
-        skuItemVo.setImages(images);
-        //3、获取spu的销售属性组合
+        CompletableFuture<SkuInfoEntity> infoFuture = CompletableFuture.supplyAsync(() -> {
+            //1、sku基本信息获取  pms_sku_info
+            SkuInfoEntity info = this.getById(skuId);
+            skuItemVo.setInfo(info);
+            return info;
+        }, executor);
+
+        CompletableFuture<Void> imagesFuture = CompletableFuture.runAsync(() -> {
+            //2、sku的图片信息  pms_sku_images
+            LambdaQueryWrapper<SkuImagesEntity> lqw = new LambdaQueryWrapper<>();
+            lqw.eq(SkuImagesEntity::getSkuId, skuId);
+            List<SkuImagesEntity> images = skuImagesService.list(lqw);
+            skuItemVo.setImages(images);
+        }, executor);
+
+        CompletableFuture<Void> saleAttrFuture = infoFuture.thenAcceptAsync((res) -> {
+            //3、获取spu的销售属性组合
+            List<SkuItemSaleAttrVo> saleAttrVos = skuSaleAttrValueService.getSaleAttrsBySpuId(res.getSpuId());
+            skuItemVo.setSaleAttr(saleAttrVos);
+        }, executor);
+
+        CompletableFuture<Void> descFuture = infoFuture.thenAcceptAsync((res) -> {
+            //4、获取spu的介绍
+            SpuInfoDescEntity desp = spuInfoDescService.getById(res.getSpuId());
+            skuItemVo.setDesp(desp);
+        }, executor);
+
+        CompletableFuture<Void> baseAttrFuture = infoFuture.thenAcceptAsync((res) -> {
+            //5、获取spu的规格参数信息
+            List<SpuItemAttrGroupVo> spuItemAttrGroupVos = attrGroupService.getAttrGroupWithAttrsBySpuId(res.getSpuId());
+            skuItemVo.setGroupAttrs(spuItemAttrGroupVos);
+        }, executor);
 
 
-
-        //4、获取spu的介绍
-        SpuInfoDescEntity desp = spuInfoDescService.getById(spuId);
-        skuItemVo.setDesp(desp);
-
-        //5、获取spu的规格参数信息
-        List<SpuItemAttrGroupVo> groupAttrs = attrGroupService.getAttrGroupWithAttrsBySpuId(spuId,catalogId);
-        skuItemVo.setGroupAttrs(groupAttrs);
-
+        //等待所有任务都完成，再返回skuItemVo
+        CompletableFuture.anyOf(imagesFuture,saleAttrFuture,descFuture,baseAttrFuture).get();
         return skuItemVo;
     }
 

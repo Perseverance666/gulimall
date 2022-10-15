@@ -93,15 +93,14 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
     }
 
     /**
-     * 根据spuId，查询分组名，属性名，属性值，封装成SpuItemAttrGroupVo
+     * 根据spuId，查询属性分组名，属性名，属性值，封装成SpuItemAttrGroupVo
      * 这里用联合查询left join
      * @param spuId
-     * @param catalogId
      * @return
      */
     @Override
-    public List<SpuItemAttrGroupVo> getAttrGroupWithAttrsBySpuId(Long spuId, Long catalogId) {
-        List<SpuItemAttrGroupVo> vos = this.baseMapper.getAttrGroupWithAttrsBySpuId(spuId,catalogId);
+    public List<SpuItemAttrGroupVo> getAttrGroupWithAttrsBySpuId(Long spuId) {
+        List<SpuItemAttrGroupVo> vos = this.baseMapper.getAttrGroupWithAttrsBySpuId(spuId);
         return vos;
     }
 

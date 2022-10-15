@@ -5,6 +5,8 @@ import com.example.gulimall.product.dao.AttrGroupDao;
 import com.example.gulimall.product.entity.BrandEntity;
 import com.example.gulimall.product.service.BrandService;
 import com.example.gulimall.product.service.CategoryService;
+import com.example.gulimall.product.service.SkuSaleAttrValueService;
+import com.example.gulimall.product.vo.SkuItemSaleAttrVo;
 import com.example.gulimall.product.vo.SpuItemAttrGroupVo;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
@@ -35,6 +37,8 @@ public class GulimallProductApplicationTests {
     private RedissonClient redissonClient;
     @Autowired
     private AttrGroupDao attrGroupDao;
+    @Autowired
+    private SkuSaleAttrValueService skuSaleAttrValueService;
 
     @Test
     public void test1() {
@@ -46,7 +50,12 @@ public class GulimallProductApplicationTests {
 
     @Test
     public void test2() {
-        List<SpuItemAttrGroupVo> list = attrGroupDao.getAttrGroupWithAttrsBySpuId(100L, 225L);
+        List<SpuItemAttrGroupVo> list = attrGroupDao.getAttrGroupWithAttrsBySpuId(11L);
+        System.out.println(list);
+    }
+    @Test
+    public void test3() {
+        List<SkuItemSaleAttrVo> list = skuSaleAttrValueService.getSaleAttrsBySpuId(13L);
         System.out.println(list);
     }
 

@@ -4,6 +4,7 @@ import lombok.Data;
 
 /**
  * @Date: 2022/10/14 20:27
+ * 有哪些sku包含该属性值
  */
 
 @Data

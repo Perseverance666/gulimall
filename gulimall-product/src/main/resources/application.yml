@@ -31,6 +31,7 @@ spring:
       cache-null-values: true     #是否缓存空值。防止缓存穿透问题
       use-key-prefix: true       #默认是true。不指定的话，分区名作为前缀  例：category:key
 
+
 mybatis-plus:
   mapper-locations: classpath:/mapper/**/*.xml
   global-config:
@@ -43,3 +44,9 @@ server:
 logging:
   level:
     com.example.gulimall: error
+
+gulimall:
+  thread:
+    core-size: 20
+    max-size: 200
+    keep-alive-time: 10

@@ -81,7 +81,12 @@
             <artifactId>spring-boot-starter-cache</artifactId>
         </dependency>
 
-
+        <!-- 加上springboot元数据处理器，以后写东西就有提示 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
 
     </dependencies>
     <dependencyManagement>

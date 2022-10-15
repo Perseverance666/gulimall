@@ -4,14 +4,22 @@
 <mapper namespace="com.example.gulimall.product.dao.SkuSaleAttrValueDao">
 
 	<!-- 可根据自己的需求，是否要使用 -->
-    <resultMap type="com.example.gulimall.product.entity.SkuSaleAttrValueEntity" id="skuSaleAttrValueMap">
-        <result property="id" column="id"/>
-        <result property="skuId" column="sku_id"/>
+    <resultMap type="com.example.gulimall.product.vo.SkuItemSaleAttrVo" id="SkuItemSaleAttrVo">
         <result property="attrId" column="attr_id"/>
         <result property="attrName" column="attr_name"/>
-        <result property="attrValue" column="attr_value"/>
-        <result property="attrSort" column="attr_sort"/>
+        <collection property="attrValues" ofType="com.example.gulimall.product.vo.AttrValueWithSkuIdVo">
+            <result property="attrValue" column="attr_value"></result>
+            <result property="skuIds" column="sku_ids"></result>
+        </collection>
     </resultMap>
+
+    <select id="getSaleAttrsBySpuId" resultMap="SkuItemSaleAttrVo">
+        select ssav.attr_id,ssav.attr_name,ssav.attr_value,group_concat(distinct si.sku_id) sku_ids
+        from pms_sku_sale_attr_value ssav
+                 left join pms_sku_info si on ssav.sku_id = si.sku_id
+        where si.spu_id = #{spuId}
+        group by ssav.attr_id,ssav.attr_name,ssav.attr_value;
+    </select>
 
 
 </mapper>
