@@ -1,5 +1,6 @@
 package com.example.gulimall.member.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.springframework.stereotype.Service;
 import java.util.Map;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -24,6 +25,18 @@ public class MemberLevelServiceImpl extends ServiceImpl<MemberLevelDao, MemberLe
         );
 
         return new PageUtils(page);
+    }
+
+    /**
+     * 获取默认等级的MemberLevelEntity
+     * @return
+     */
+    @Override
+    public MemberLevelEntity getDefaultLevel() {
+        LambdaQueryWrapper<MemberLevelEntity> lqw = new LambdaQueryWrapper<>();
+        lqw.eq(MemberLevelEntity::getDefaultStatus,1);
+        MemberLevelEntity memberLevelEntity = this.getOne(lqw);
+        return memberLevelEntity;
     }
 
 }

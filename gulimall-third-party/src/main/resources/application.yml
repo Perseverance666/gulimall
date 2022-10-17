@@ -14,7 +14,7 @@ spring:
       oss:
         endpoint: oss-cn-beijing.aliyuncs.com
         bucket: gulimall-2022-09
-      sms:
+      sms:      #自定义的
         host: https://dfsns.market.alicloudapi.com
         path: /data/send_sms
         appcode: 40b8cb66e9ad4b7a8efb207959578a48

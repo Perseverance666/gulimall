@@ -4,12 +4,13 @@ import java.util.Arrays;
 import java.util.Map;
 
 //import org.apache.shiro.authz.annotation.RequiresPermissions;
+import com.example.common.exception.BizCodeEnum;
+import com.example.gulimall.member.exception.PhoneExistException;
+import com.example.gulimall.member.exception.UserNameExistException;
+import com.example.gulimall.member.vo.MemberLoginVo;
+import com.example.gulimall.member.vo.MemberRegisterVo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.example.gulimall.member.entity.MemberEntity;
 import com.example.gulimall.member.service.MemberService;
@@ -30,6 +31,38 @@ import com.example.common.utils.R;
 public class MemberController {
     @Autowired
     private MemberService memberService;
+
+    /**
+     * 会员登录功能
+     * @param vo
+     * @return
+     */
+    @PostMapping("/login")
+    public R login(@RequestBody MemberLoginVo vo){
+        MemberEntity memberEntity = memberService.login(vo);
+        if(memberEntity != null){
+            return R.ok();
+        }else{
+            return R.error(BizCodeEnum.ACCOUNT_PASSWORD_INVALID_EXCEPTION.getCode(),BizCodeEnum.ACCOUNT_PASSWORD_INVALID_EXCEPTION.getMsg());
+        }
+    }
+
+    /**
+     * 注册会员功能
+     * @param vo
+     * @return
+     */
+    @PostMapping("/register")
+    public R register(@RequestBody MemberRegisterVo vo){
+        try{
+            memberService.register(vo);
+        }catch (PhoneExistException e){
+            return R.error(BizCodeEnum.PHONE_EXIST_EXCEPTION.getCode(),BizCodeEnum.PHONE_EXIST_EXCEPTION.getMsg());
+        }catch (UserNameExistException e){
+            return R.error(BizCodeEnum.USER_EXIST_EXCEPTION.getCode(),BizCodeEnum.USER_EXIST_EXCEPTION.getMsg());
+        }
+        return R.ok();
+    }
 
     /**
      * 列表

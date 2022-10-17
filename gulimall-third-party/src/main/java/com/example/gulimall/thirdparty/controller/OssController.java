@@ -22,9 +22,10 @@ import java.util.Map;
  */
 
 @RestController
+@RequestMapping("/oss")
 public class OssController {
     @Autowired
-    OSS ossClient;
+    private OSS ossClient;
 
     @Value("${spring.cloud.alicloud.oss.endpoint}")
     private String endpoint;
@@ -40,7 +41,7 @@ public class OssController {
      * 获取对象存储服务端签名
      * @return
      */
-    @GetMapping("/oss/policy")
+    @GetMapping("/policy")
     public R policy() {
         //https://gulimall-2022-09.oss-cn-beijing.aliyuncs.com/Tom.jpg
 
