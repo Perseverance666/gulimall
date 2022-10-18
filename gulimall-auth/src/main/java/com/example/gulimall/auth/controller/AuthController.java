@@ -126,8 +126,12 @@ public class AuthController {
         }
     }
 
-
-
+    /**
+     * 注册会员功能
+     * @param vo
+     * @param redirectAttributes
+     * @return
+     */
     @PostMapping("/login")
     public String login(UserLoginVo vo,RedirectAttributes redirectAttributes){
         R r = memberFeignService.login(vo);
@@ -141,4 +145,6 @@ public class AuthController {
         }
 
     }
+
+
 }

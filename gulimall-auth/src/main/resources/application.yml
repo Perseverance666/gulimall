@@ -13,3 +13,10 @@ spring:
   redis:
     host: 192.168.138.102
     port: 6379
+
+oauth2:   #自定义的
+  gitee:
+    grant-type: authorization_code
+    client-id: 72935605f7abbcf2f4b373680c089dd0e3930cc82d5ca246fa6d1766638649e8
+    client-secret: 3fae0403bdba26bd0f13eff2264e79d5f60f7deb19be358867ec1d9068f89b30
+    redirect-uri: http://auth.gulimall.com/oauth2.0/gitee/success

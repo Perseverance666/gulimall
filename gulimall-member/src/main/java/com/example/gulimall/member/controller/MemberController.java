@@ -9,6 +9,7 @@ import com.example.gulimall.member.exception.PhoneExistException;
 import com.example.gulimall.member.exception.UserNameExistException;
 import com.example.gulimall.member.vo.MemberLoginVo;
 import com.example.gulimall.member.vo.MemberRegisterVo;
+import com.example.gulimall.member.vo.SocialUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,6 +34,23 @@ public class MemberController {
     private MemberService memberService;
 
     /**
+     * 社交用户登录功能
+     * @param socialUser
+     * @return
+     */
+    @PostMapping("/oauth2/login")
+    public R oauthLogin(@RequestBody SocialUser socialUser) throws Exception {
+        MemberEntity memberEntity = memberService.oauthLogin(socialUser);
+
+        if(memberEntity != null){
+            return R.ok().put("data",memberEntity);
+        }else{
+            return R.error("查询社交用户信息出现异常");
+        }
+
+    }
+
+    /**
      * 会员登录功能
      * @param vo
      * @return
@@ -41,7 +59,7 @@ public class MemberController {
     public R login(@RequestBody MemberLoginVo vo){
         MemberEntity memberEntity = memberService.login(vo);
         if(memberEntity != null){
-            return R.ok();
+            return R.ok().put("data",memberEntity);
         }else{
             return R.error(BizCodeEnum.ACCOUNT_PASSWORD_INVALID_EXCEPTION.getCode(),BizCodeEnum.ACCOUNT_PASSWORD_INVALID_EXCEPTION.getMsg());
         }
