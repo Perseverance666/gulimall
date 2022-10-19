@@ -1,19 +1,17 @@
 package com.example.gulimall.search;
 
 import com.alibaba.fastjson.JSON;
-import com.example.gulimall.search.config.GulimallElasticSearchConfig;
+import com.example.gulimall.search.config.ElasticSearchConfig;
 import lombok.Data;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
-import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.Aggregations;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
@@ -74,7 +72,7 @@ public class GulimallSearchApplicationTests {
         request.source(sourceBuilder);
 
         //2. 执行检索
-        SearchResponse searchResponse = client.search(request, GulimallElasticSearchConfig.COMMON_OPTIONS);
+        SearchResponse searchResponse = client.search(request, ElasticSearchConfig.COMMON_OPTIONS);
         System.out.println("检索结果：" + searchResponse);
 
         //3. 将检索结果封装为Bean
@@ -118,7 +116,7 @@ public class GulimallSearchApplicationTests {
         request.source(jsonString, XContentType.JSON); //要保存的内容
 
         //执行新增
-        IndexResponse indexResponse = client.index(request, GulimallElasticSearchConfig.COMMON_OPTIONS);
+        IndexResponse indexResponse = client.index(request, ElasticSearchConfig.COMMON_OPTIONS);
 
         //提取有用的响应数据
         System.out.println(indexResponse);

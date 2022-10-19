@@ -1,9 +1,11 @@
 package com.example.gulimall.auth.controller;
 
 
+import com.alibaba.fastjson.TypeReference;
 import com.example.common.constant.AuthConstant;
 import com.example.common.exception.BizCodeEnum;
 import com.example.common.utils.R;
+import com.example.common.vo.MemberRespVo;
 import com.example.gulimall.auth.feign.MemberFeignService;
 import com.example.gulimall.auth.feign.ThirdPartyFeignService;
 import com.example.gulimall.auth.vo.UserLoginVo;
@@ -18,6 +20,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
@@ -71,11 +74,6 @@ public class AuthController {
 
     /**
      * 注册功能
-     *
-     *   //TODO 重定向携带数据，利用session原理。将数据放在session中。
-     *     只要跳到下一个页面取出这个数据以后，session里面的数据就会删掉
-     *
-     *  //TODO 分布式下的session问题。
      * @param vo
      * @param result
      * @param redirectAttributes 模拟重定向携带数据
@@ -127,15 +125,17 @@ public class AuthController {
     }
 
     /**
-     * 注册会员功能
+     * 使用账号密码登录功能
      * @param vo
      * @param redirectAttributes
      * @return
      */
     @PostMapping("/login")
-    public String login(UserLoginVo vo,RedirectAttributes redirectAttributes){
+    public String login(UserLoginVo vo, RedirectAttributes redirectAttributes, HttpSession session){
         R r = memberFeignService.login(vo);
         if(r.getCode() == 0){
+            MemberRespVo data = r.getData("data", new TypeReference<MemberRespVo>() {});
+            session.setAttribute(AuthConstant.LOGIN_USER,data);
             return "redirect:http://gulimall.com";
         }else{
             Map<String, String> errors = new HashMap<>();
@@ -144,6 +144,24 @@ public class AuthController {
             return "redirect:http://auth.gulimall.com/login.html";
         }
 
+    }
+
+
+    /**
+     * 登录页处理
+     * @param session
+     * @return
+     */
+    @GetMapping("/login.html")
+    public String loginPage(HttpSession session){
+        Object attribute = session.getAttribute(AuthConstant.LOGIN_USER);
+        if(attribute == null){
+            //没有登录，跳转登录页
+            return "login";
+        }else{
+            //已经登录，跳转首页
+            return "redirect:http://gulimall.com";
+        }
     }
 
 

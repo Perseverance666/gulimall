@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
  */
 
 @Configuration
-public class MyRedissonConfig {
+public class RedissonConfig {
 
     /**
      * 所有对Redisson的使用都是通过RedissonClient对象

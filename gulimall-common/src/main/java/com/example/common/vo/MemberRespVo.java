@@ -1,12 +1,13 @@
-package com.example.gulimall.auth.vo;
+package com.example.common.vo;
 
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @Data
-public class MemberRespVo {
+public class MemberRespVo implements Serializable {
 
 	/**
 	 * id

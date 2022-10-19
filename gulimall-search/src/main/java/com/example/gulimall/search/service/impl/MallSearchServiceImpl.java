@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.example.common.es.SkuEsModel;
 import com.example.common.utils.R;
-import com.example.gulimall.search.config.GulimallElasticSearchConfig;
+import com.example.gulimall.search.config.ElasticSearchConfig;
 import com.example.gulimall.search.constant.EsConstant;
 import com.example.gulimall.search.feign.ProductFeignService;
 import com.example.gulimall.search.service.MallSearchService;
@@ -19,9 +19,7 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.index.query.*;
 import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
-import org.elasticsearch.search.aggregations.Aggregations;
 import org.elasticsearch.search.aggregations.bucket.nested.NestedAggregationBuilder;
 import org.elasticsearch.search.aggregations.bucket.nested.ParsedNested;
 import org.elasticsearch.search.aggregations.bucket.terms.ParsedLongTerms;
@@ -65,7 +63,7 @@ public class MallSearchServiceImpl implements MallSearchService {
         SearchRequest searchRequest = buildSearchRequest(param);
         try {
             //2、执行检索请求
-            SearchResponse response = client.search(searchRequest, GulimallElasticSearchConfig.COMMON_OPTIONS);
+            SearchResponse response = client.search(searchRequest, ElasticSearchConfig.COMMON_OPTIONS);
             //3、分析响应数据封装成SearchResult
             result = buildSearchResult(response,param);
         } catch (IOException e) {

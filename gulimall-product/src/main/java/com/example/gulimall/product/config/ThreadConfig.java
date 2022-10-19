@@ -10,7 +10,7 @@ import java.util.concurrent.*;
  */
 
 @Configuration
-public class MyThreadConfig {
+public class ThreadConfig {
     @Bean
     public ThreadPoolExecutor threadPoolExecutor(ThreadPoolConfigProperties pool){
         return new ThreadPoolExecutor(

@@ -1,20 +1,32 @@
 server:
   port: 20000
+  servlet:
+    session:
+      timeout: 30m
 
 spring:
   application:
     name: gulimall-auth
+
   cloud:
     nacos:
       discovery:
         server-addr: 127.0.0.1:8848
+
   thymeleaf:
     cache: false
+
   redis:
     host: 192.168.138.102
     port: 6379
 
-oauth2:   #自定义的
+  session:
+    store-type: redis         #SpringSession将session数据存入redis解决集群问题
+
+
+
+#自定义的，第三方gitee登录功能配置
+oauth2:
   gitee:
     grant-type: authorization_code
     client-id: 72935605f7abbcf2f4b373680c089dd0e3930cc82d5ca246fa6d1766638649e8

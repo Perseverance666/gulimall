@@ -17,7 +17,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @EnableConfigurationProperties(CacheProperties.class)
 @EnableCaching
 @Configuration
-public class MyCacheConfig {
+public class CacheConfig {
 
     /**
      * 自定义redis缓存配置

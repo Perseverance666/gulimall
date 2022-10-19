@@ -9,7 +9,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  */
 
 @Configuration
-public class GulimallWebConfig implements WebMvcConfigurer {
+public class WebMvcConfig implements WebMvcConfigurer {
 
     /**
      * 视图映射
@@ -17,7 +17,8 @@ public class GulimallWebConfig implements WebMvcConfigurer {
      */
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("login.html").setViewName("login");
+        //写controller了，loginPage处理登录页逻辑
+//        registry.addViewController("login.html").setViewName("login");
         registry.addViewController("register.html").setViewName("register");
     }
 }

@@ -51,7 +51,7 @@ public class MemberController {
     }
 
     /**
-     * 会员登录功能
+     * 使用账号密码登录功能
      * @param vo
      * @return
      */

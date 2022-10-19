@@ -91,7 +91,7 @@ public class MemberServiceImpl extends ServiceImpl<MemberDao, MemberEntity> impl
     }
 
     /**
-     * 会员登录功能
+     * 使用账号密码登录功能
      * @param vo
      * @return
      */
