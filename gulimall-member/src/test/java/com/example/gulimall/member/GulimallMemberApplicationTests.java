@@ -1,13 +1,19 @@
 package com.example.gulimall.member;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.Date;
+
+@RunWith(SpringRunner.class)
 @SpringBootTest
-class GulimallMemberApplicationTests {
+public class GulimallMemberApplicationTests {
 
     @Test
-    void contextLoads() {
+    public void contextLoads() {
+        System.out.println(new Date());
     }
 
 }
