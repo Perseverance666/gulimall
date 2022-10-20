@@ -77,7 +77,7 @@ public class MemberServiceImpl extends ServiceImpl<MemberDao, MemberEntity> impl
                 newMember.setCreateTime(new Date());
                 newMember.setLevelId(1L);
                 newMember.setSocialUid(uid);
-                newMember.setSocialType("gitee");
+                newMember.setSocialType(socialUser.getSocialType());
 
                 this.baseMapper.insert(newMember);
 

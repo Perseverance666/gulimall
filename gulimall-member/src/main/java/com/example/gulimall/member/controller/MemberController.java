@@ -10,6 +10,7 @@ import com.example.gulimall.member.exception.UserNameExistException;
 import com.example.gulimall.member.vo.MemberLoginVo;
 import com.example.gulimall.member.vo.MemberRegisterVo;
 import com.example.gulimall.member.vo.SocialUser;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

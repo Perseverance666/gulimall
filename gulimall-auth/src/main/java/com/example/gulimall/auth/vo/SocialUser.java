@@ -15,4 +15,6 @@ public class SocialUser {
     private String refresh_token;
     private String scope;
     private String created_at;
+
+    private String socialType;      //自定义的，社交用户类型
 }

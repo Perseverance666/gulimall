@@ -4,9 +4,12 @@ import com.example.common.utils.R;
 import com.example.gulimall.auth.vo.SocialUser;
 import com.example.gulimall.auth.vo.UserLoginVo;
 import com.example.gulimall.auth.vo.UserRegisterVo;
+
+import feign.Param;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+
 
 /**
  * @Date: 2022/10/17 19:32

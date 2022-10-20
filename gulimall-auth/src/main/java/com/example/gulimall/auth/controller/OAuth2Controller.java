@@ -36,6 +36,13 @@ public class OAuth2Controller {
     @Autowired
     private MemberFeignService memberFeignService;
 
+    /**
+     * gitee社交登录
+     * @param code
+     * @param session
+     * @return
+     * @throws Exception
+     */
     @GetMapping("/gitee/success")
     public String giteeSuccess(@RequestParam("code") String code, HttpSession session) throws Exception {
         Map<String,String> header = new HashMap<>();
@@ -54,7 +61,8 @@ public class OAuth2Controller {
             //获取accessToken成功
             String json = EntityUtils.toString(response.getEntity());
             SocialUser socialUser = JSON.parseObject(json, SocialUser.class);
-            log.info("accessToken:{}",socialUser.getAccess_token());
+            socialUser.setSocialType("gitee");
+            log.info("获取的accessToken:{}",socialUser.getAccess_token());
             R r = memberFeignService.oauthLogin(socialUser);
             if(r.getCode() == 0){
                 //登录成功，进入首页
