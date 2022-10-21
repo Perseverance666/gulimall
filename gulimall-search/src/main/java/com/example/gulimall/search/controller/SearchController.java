@@ -1,6 +1,6 @@
 package com.example.gulimall.search.controller;
 
-import com.example.gulimall.search.service.MallSearchService;
+import com.example.gulimall.search.service.SearchService;
 import com.example.gulimall.search.vo.SearchParam;
 import com.example.gulimall.search.vo.SearchResult;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 public class SearchController {
     @Autowired
-    private MallSearchService mallSearchService;
+    private SearchService searchService;
 
     /**
      * 自动将页面提交过来的所有请求查询参数封装成SearchParam对象，然后再到es中去查询，返回SearchResult结果，并展示到页面上
@@ -28,7 +28,7 @@ public class SearchController {
     public String listPage(SearchParam param, Model model, HttpServletRequest request){
         //设置原生的所有查询条件
         param.set_queryString(request.getQueryString());
-        SearchResult result = mallSearchService.search(param);
+        SearchResult result = searchService.search(param);
         model.addAttribute("result",result);
 
         return "list";

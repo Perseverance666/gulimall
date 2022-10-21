@@ -8,6 +8,6 @@ import com.example.gulimall.search.vo.SearchResult;
  */
 
 
-public interface MallSearchService {
+public interface SearchService {
     SearchResult search(SearchParam param);
 }

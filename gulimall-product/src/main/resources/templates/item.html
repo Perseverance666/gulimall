@@ -15,7 +15,7 @@
 			<!--品牌官方网站-->
 					<div class="min">
 						<ul class="header_ul_left">
-							<li class="glyphicon glyphicon-home"> <a href="/static/item/shouye.html" class="aa">京东首页</a></li>
+							<li class="glyphicon glyphicon-home"> <a href="http://gulimall.com" class="aa">商城首页</a></li>
 							<li class="glyphicon glyphicon-map-marker"> <a href="/static/item/javascript:;">北京</a>
 								<ol id="beijing">
 									<li style="background: red;"><a href="/static/item/javascript:;" style="color: white;">北京</a></li>
@@ -256,7 +256,7 @@
 					<div class="nav_top">
 						<div class="nav_top_one"><a href="http://gulimall.com"><img src="/static/item/img/logo1.jpg"/></a></div>
 						<div class="nav_top_two"><input type="text"/><button>搜索</button></div>
-						<div class="nav_top_three"><a href="/static/item/../JD_Shop/One_JDshop.html">我的购物车</a><span class="glyphicon glyphicon-shopping-cart"></span>
+						<div class="nav_top_three"><a href="http://cart.gulimall.com/cart_index">我的购物车</a><span class="glyphicon glyphicon-shopping-cart"></span>
 							<div class="nav_top_three_1">
 								<img src="/static/item/img/44.png"/>购物车还没有商品，赶紧选购吧！
 							</div>
@@ -615,7 +615,7 @@
 
 						<div class="box-btns clear">
 							<div class="box-btns-one">
-								<input type="text" name="" id="" value="1" />
+								<input type="text" name="" id="numInput" value="1" />
 								<div class="box-btns-one1">
 
 									<div>
@@ -632,8 +632,8 @@
 								</div>
 							</div>
 							<div class="box-btns-two">
-								<a href="/static/item/../商品分类\index.html">
-									立即预约
+								<a href="#" id="addToCartA" th:attr="skuId=${item.info.skuId}">
+									加入购物车
 								</a>
 							</div>
 							<div class="box-btns-three">
@@ -1288,6 +1288,17 @@
 			$(".sku_attr_value").parent().css({"border":"solid 1px #CCC"});
 			$("a[class='sku_attr_value checked']").parent().css({"border":"solid 1px red"});
 		})
+
+		//为加入购物车绑定单击事件
+		$("#addToCartA").click(function(){
+			//获取数量
+			var  num = $("#numInput").val();
+			var skuId = $(this).attr("skuId");
+			location.href = "http://cart.gulimall.com/addToCart.html?skuId="+skuId+"&num="+num;
+			//禁用超链接的默认行为
+			return false;
+		});
+
 
 	</script>
 

@@ -7,7 +7,7 @@ import com.example.common.utils.R;
 import com.example.gulimall.search.config.ElasticSearchConfig;
 import com.example.gulimall.search.constant.EsConstant;
 import com.example.gulimall.search.feign.ProductFeignService;
-import com.example.gulimall.search.service.MallSearchService;
+import com.example.gulimall.search.service.SearchService;
 import com.example.gulimall.search.vo.AttrResponseVo;
 import com.example.gulimall.search.vo.BrandVo;
 import com.example.gulimall.search.vo.SearchParam;
@@ -45,7 +45,7 @@ import java.util.stream.Collectors;
  */
 
 @Service
-public class MallSearchServiceImpl implements MallSearchService {
+public class SearchServiceImpl implements SearchService {
     @Autowired
     private RestHighLevelClient client;
     @Autowired
