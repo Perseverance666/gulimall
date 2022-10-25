@@ -18,6 +18,7 @@ import org.springframework.data.redis.core.BoundHashOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -37,6 +38,40 @@ public class CartServiceImpl implements CartService {
     private ProductFeignService productFeignService;
     @Autowired
     private ThreadPoolExecutor executor;
+
+    /**
+     * 获取登录用户的购物车中所选中的购物项信息
+     * @return 未登录的话，返回null
+     */
+    @Override
+    public List<CartItem> getCurrentUserCheckedCartItems() {
+        UserInfoTo userInfoTo = CartInterceptor.threadLocal.get();
+        if(userInfoTo.getUserId() == null){
+            //未登录
+            return null;
+        }
+        //登录，去redis中查询数据
+        String cartKey = CartConstant.CART_PREFIX + userInfoTo.getUserId();
+        List<CartItem> cartItems = getCartItems(cartKey);
+        //1、筛选出被选中的购物项
+        List<CartItem> collect = cartItems.stream().filter(cartItem -> cartItem.getCheck())
+                .map(cartItem -> {
+                    //2、获取到最新价格，而不是购物车中原来的价格
+                    R r = productFeignService.getSkuInfo(cartItem.getSkuId());
+                    if(r.getCode() == 0){
+                        SkuInfoTo skuInfo = r.getData("skuInfo", new TypeReference<SkuInfoTo>() {});
+                        BigDecimal currentPrice = skuInfo.getPrice();
+                        cartItem.setPrice(currentPrice);
+                        return cartItem;
+                    }else{
+                        throw new RRException("远程调用查询sku信息失败");
+                    }
+                }).collect(Collectors.toList());
+
+        return collect;
+
+    }
+
 
     /**
      * 删除指定购物项

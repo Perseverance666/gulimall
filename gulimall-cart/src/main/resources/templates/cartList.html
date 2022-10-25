@@ -31,7 +31,7 @@
                     <a th:if="${session.loginUser == null}" href="http://auth.gulimall.com/reg.html" style="color:red;">免费注册</a>
                 </li>
                 <li class="spacer"></li>
-                <li><a href="">我的订单</a></li>
+                <li><a href="http://order.gulimall.com/list.html">我的订单</a></li>
                 <li class="spacer"></li>
 
             </ul>
@@ -219,7 +219,7 @@
 <script src="/static/cart/js/index.js" charset="utf-8"></script>
 <script type="text/javascript">
     function toTrade() {
-        window.location.href = "http://cart.gmall.com:8087/toTrade";
+        window.location.href = "http://order.gulimall.com/toTrade";
     }
 
     function toItem(skuId) {

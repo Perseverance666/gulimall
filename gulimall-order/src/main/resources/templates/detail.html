@@ -131,14 +131,15 @@
                 </li>
             </ul>
             <ul class="header_ul_right">
-                <li style="border: 0;">
-                    <a href="/static/order/detail/denglu.html" class="aa">你好，请登录</a>
+                <li>
+                    <a th:if="${session.loginUser!=null}">[[${session.loginUser==null?'':session.loginUser.nickname}]]</a>
+                    <a href="http://auth.gulimall.com/login.html" th:if="${session.loginUser==null}">你好，请登录</a>
+                </li>
+                <li th:if="${session.loginUser==null}">
+                    <a href="http://auth.gulimall.com/register.html" style="color: red">免费注册</a>
                 </li>
                 <li>
-                    <a href="/static/order/detail/javascript:;" style="color: red;">免费注册</a> |
-                </li>
-                <li>
-                    <a href="/static/order/detail/javascript:;" class="aa">我的订单</a> |
+                  |  <a href="http://order.gulimall.com/list.html" class="aa">我的订单</a> |
                 </li>
                 <li class="jingdong" style="width:95px;">
                     <a href="/static/order/detail/javascript:;">我的谷粒商城</a><span
@@ -412,7 +413,7 @@
                     <button>搜索</button>
                 </div>
                 <div class="nav_top_three">
-                    <a href="/static/order/detail/../JD_Shop/One_JDshop.html">我的购物车</a><span
+                    <a href="http://cart.gulimall.com/cart_index">我的购物车</a><span
                         class="glyphicon glyphicon-shopping-cart"></span>
                     <div class="nav_top_three_1">
                         <img src="/static/order/detail/img/44.png"/>购物车还没有商品，赶紧选购吧！
@@ -894,8 +895,7 @@
             <div class="xuanxiangka">
                 <ul class="ul1">
                     <li>
-                        <ul class="ul2"
-                        ">
+                        <ul class="ul2">
                     <li>
                         <img src="/static/order/detail/image/5a0bf933N27e3b0be.jpg"/>
                         <p class="p1">展卉 泰国进口龙眼 1kg 新鲜水果</p>
