@@ -29,4 +29,6 @@ server:
 
 logging:
   level:
-    com.example: debug
+    com.example.gulimall: error
+    com.alibaba.nacos.client.naming: WARN
+

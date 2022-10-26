@@ -1,15 +1,13 @@
 package com.example.gulimall.ware.controller;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Map;
 
 //import org.apache.shiro.authz.annotation.RequiresPermissions;
+import com.example.gulimall.ware.vo.FareVo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.example.gulimall.ware.entity.WareInfoEntity;
 import com.example.gulimall.ware.service.WareInfoService;
@@ -31,6 +29,16 @@ public class WareInfoController {
     @Autowired
     private WareInfoService wareInfoService;
 
+    /**
+     * 根据地址信息，计算运费
+     * @param addrId
+     * @return
+     */
+    @GetMapping("/fare")
+    public R getFare(@RequestParam("addrId") Long addrId){
+        FareVo fare = wareInfoService.getFare(addrId);
+        return R.ok().put("data",fare);
+    }
     /**
      * 仓库列表
      * 库存系统，仓库维护，列表展示
