@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.example.common.to.SkuHasStockTo;
 import com.example.common.utils.R;
 import com.example.gulimall.ware.feign.ProductFeignService;
+import com.example.gulimall.ware.vo.LockStockResult;
+import com.example.gulimall.ware.vo.WareSkuLockVo;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -108,6 +110,19 @@ public class WareSkuServiceImpl extends ServiceImpl<WareSkuDao, WareSkuEntity> i
             return to;
         }).collect(Collectors.toList());
         return collect;
+    }
+
+    /**
+     *
+     * @param vo
+     * @return
+     */
+    @Override
+    public LockStockResult orderLockStock(WareSkuLockVo vo) {
+        LockStockResult result = new LockStockResult();
+
+
+        return result;
     }
 
 }

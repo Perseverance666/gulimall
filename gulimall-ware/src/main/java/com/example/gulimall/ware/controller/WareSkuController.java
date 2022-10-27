@@ -6,6 +6,8 @@ import java.util.Map;
 
 //import org.apache.shiro.authz.annotation.RequiresPermissions;
 import com.example.common.to.SkuHasStockTo;
+import com.example.gulimall.ware.vo.LockStockResult;
+import com.example.gulimall.ware.vo.WareSkuLockVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,6 +30,17 @@ import com.example.common.utils.R;
 public class WareSkuController {
     @Autowired
     private WareSkuService wareSkuService;
+
+    /**
+     * 保存订单之后的锁库存操作
+     * @param vo
+     * @return
+     */
+    @GetMapping("/lock/order")
+    public R orderLockStock(@RequestBody WareSkuLockVo vo){
+        LockStockResult result = wareSkuService.orderLockStock(vo);
+        return R.ok().put("data",result);
+    }
 
     /**
      * 根据skuIds来查询所有的sku是否有库存

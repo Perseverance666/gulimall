@@ -25,7 +25,7 @@ public class OrderSubmitVo {
     //防重令牌
     private String orderToken;
 
-    //应付价格  验价
+    //应付价格  用于验价
     private BigDecimal payPrice;
 
     //订单备注
