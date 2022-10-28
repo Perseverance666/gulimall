@@ -14,6 +14,7 @@ import com.example.gulimall.product.feign.SearchFeignService;
 import com.example.gulimall.product.feign.WareFeignService;
 import com.example.gulimall.product.service.*;
 import com.example.gulimall.product.vo.*;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,8 +79,12 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
      * TODO 高级部分再来完善
      * 新增商品
      * 商品系统，商品维护，发布商品，输入SKU信息后，点击下一步：保存商品信息
+     *
+     * @GlobalTransactional （不适用高并发）
+     * 没有高并发，适合Seata AT 分布式事务
      * @param vo
      */
+//    @GlobalTransactional
     @Transactional
     @Override
     public void saveSpuInfo(SpuSaveVo vo) {

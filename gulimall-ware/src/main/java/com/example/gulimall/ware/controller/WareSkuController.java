@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 //import org.apache.shiro.authz.annotation.RequiresPermissions;
+import com.example.common.exception.BizCodeEnum;
 import com.example.common.to.SkuHasStockTo;
-import com.example.gulimall.ware.vo.LockStockResult;
 import com.example.gulimall.ware.vo.WareSkuLockVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -36,10 +36,14 @@ public class WareSkuController {
      * @param vo
      * @return
      */
-    @GetMapping("/lock/order")
+    @PostMapping("/lock/order")
     public R orderLockStock(@RequestBody WareSkuLockVo vo){
-        LockStockResult result = wareSkuService.orderLockStock(vo);
-        return R.ok().put("data",result);
+        try{
+            Boolean result = wareSkuService.orderLockStock(vo);
+            return R.ok();
+        }catch (Exception e){
+            return R.error(BizCodeEnum.NO_STOCK_EXCEPTION.getCode(), BizCodeEnum.NO_STOCK_EXCEPTION.getMsg());
+        }
     }
 
     /**

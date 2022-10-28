@@ -16,6 +16,7 @@ package com.example.common.exception;
  *  13: 购物车
  *  14: 物流
  *  15: 用户
+ *  16: 库存
  */
 
 public enum BizCodeEnum {
@@ -25,7 +26,8 @@ public enum BizCodeEnum {
     PRODUCT_UP_EXCEPTION(11000,"商品上架异常"),
     PHONE_EXIST_EXCEPTION(15001,"该手机号已注册！"),
     USER_EXIST_EXCEPTION(15002,"用户名已存在！"),
-    ACCOUNT_PASSWORD_INVALID_EXCEPTION(15003,"用户名或密码错误！");
+    ACCOUNT_PASSWORD_INVALID_EXCEPTION(15003,"用户名或密码错误！"),
+    NO_STOCK_EXCEPTION(16000,"商品库存不足"),;
 
     private int code;
     private String msg;

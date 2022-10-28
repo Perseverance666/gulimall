@@ -23,6 +23,6 @@ public interface WareFeignService {
     @GetMapping("/ware/wareinfo/fare")
     R getFare(@RequestParam("addrId") Long addrId);
 
-    @GetMapping("/ware/waresku/lock/order")
+    @PostMapping("/ware/waresku/lock/order")
     R orderLockStock(@RequestBody WareSkuLockVo vo);
 }

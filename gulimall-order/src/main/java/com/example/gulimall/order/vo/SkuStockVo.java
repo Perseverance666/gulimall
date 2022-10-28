@@ -5,7 +5,7 @@ import lombok.Data;
 /**
  * @Date: 2022/10/26 16:24
  *
- * 封装 指定skuI是否有库存
+ * 封装 指定skuId是否有库存
  */
 @Data
 public class SkuStockVo {

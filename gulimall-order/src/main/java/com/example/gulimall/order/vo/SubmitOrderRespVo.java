@@ -11,8 +11,16 @@ import lombok.Data;
 @Data
 public class SubmitOrderRespVo {
 
+    /**
+     * 订单信息
+     */
     private OrderEntity order;
 
-    //成功：0   错误：状态码
+    /**
+     * 状态码：
+     * 0：成功
+     * 1：令牌验证失败
+     * 2：验价失败
+     */
     private Integer code;
 }

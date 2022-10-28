@@ -17,6 +17,7 @@ import com.example.gulimall.order.interceptor.LoginInterceptor;
 import com.example.gulimall.order.service.OrderItemService;
 import com.example.gulimall.order.to.OrderCreateTo;
 import com.example.gulimall.order.vo.*;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.BoundHashOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -133,9 +134,13 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
     /**
      * 下单功能
      * 验证令牌 -> 创建订单 -> 验价(可选) -> 保存订单数据 -> 锁库存
+     *
+     * 本地事务，在分布式系统，只能控制住自己的回滚，控制不了其他服务的回滚
+     * 分布式事务： 最大原因。网络问题+分布式机器。
      * @param vo
      * @return
      */
+//    @GlobalTransactional    //高并发不适合
     @Transactional
     @Override
     public SubmitOrderRespVo submitOrder(OrderSubmitVo vo) {
@@ -180,15 +185,21 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
                 wareSkuLockVo.setLocks(locks);
 
                 //5.2、远程调用ware的orderLockStock，进行锁库存
+                //库存成功了，但是网络原因超时了，订单回滚，库存不滚。
+                //为了保证高并发。库存服务自己回滚。可以发消息给库存服务；
+                //库存服务本身也可以使用自动解锁模式  消息
                 R r = wareFeignService.orderLockStock(wareSkuLockVo);
-                if(r.getCode() != 0){
+                if(r.getCode() == 0){
                     //锁库存成功
                     response.setOrder(order.getOrder());
                     response.setCode(0);
+
+                    int i = 10/0; //模拟异常，订单回滚，库存不滚
                     return response;
                 }else {
-                    //锁库存失败，回滚
-                    throw new RRException("锁库存失败");
+                    //锁库存失败，抛异常，进行回滚
+                    String msg = (String) r.get("msg");
+                    throw new RRException(msg);
                 }
             } else{
                 //3.2、验价失败

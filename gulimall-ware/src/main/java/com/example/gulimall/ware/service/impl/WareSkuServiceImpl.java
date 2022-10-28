@@ -1,10 +1,12 @@
 package com.example.gulimall.ware.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.example.common.exception.RRException;
 import com.example.common.to.SkuHasStockTo;
 import com.example.common.utils.R;
 import com.example.gulimall.ware.feign.ProductFeignService;
-import com.example.gulimall.ware.vo.LockStockResult;
+import com.example.gulimall.ware.vo.OrderItemVo;
+import com.example.gulimall.ware.vo.SkuWareHasStockVo;
 import com.example.gulimall.ware.vo.WareSkuLockVo;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,7 @@ import com.example.common.utils.Query;
 import com.example.gulimall.ware.dao.WareSkuDao;
 import com.example.gulimall.ware.entity.WareSkuEntity;
 import com.example.gulimall.ware.service.WareSkuService;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service("wareSkuService")
@@ -113,16 +116,44 @@ public class WareSkuServiceImpl extends ServiceImpl<WareSkuDao, WareSkuEntity> i
     }
 
     /**
-     *
+     * 保存订单之后的锁库存操作
+     * 原本应该按照下单的收货地址，找到一个就近仓库，锁定库存。(此处就省略了)
      * @param vo
      * @return
      */
+    @Transactional
     @Override
-    public LockStockResult orderLockStock(WareSkuLockVo vo) {
-        LockStockResult result = new LockStockResult();
+    public Boolean orderLockStock(WareSkuLockVo vo) {
 
+        List<OrderItemVo> locks = vo.getLocks();
+        locks.forEach(sku -> {
+            Boolean skuStock = false; //默认当前sku没有锁住
+            //1、先去查看是否有库存
+            Long skuId = sku.getSkuId();
+            List<Long> wareIds = this.baseMapper.listWareIdHasSkuStock(skuId);
+            if (wareIds == null || wareIds.size() == 0) {
+                throw new RRException(skuId + "商品没有库存了");
+            }
+            for (Long wareId : wareIds) {
+                //2、尝试锁库存
+                Long count = this.baseMapper.lockSkuStock(skuId, wareId, sku.getCount());
+                if (count != 0) {
+                    //2.1、锁库存成功
+                    skuStock = true;
+                    break;
+                } else {
+                    //2.2、当前仓库锁失败，尝试下一个仓库
+                }
+            }
+            //2.3、锁定该sku失败
+            if (skuStock == false) {
+                throw new RRException(skuId + "商品没有库存了");
+            }
+        });
 
-        return result;
+        //3、走到这里就是成功锁库存了。若失败，抛异常，回滚
+        return true;
     }
+
 
 }
