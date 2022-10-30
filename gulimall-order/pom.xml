@@ -82,10 +82,11 @@
             <artifactId>spring-session-data-redis</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-aop</artifactId>
-        </dependency>
+        <!-- @EnableAspectJAutoProxy(exposeProxy = true)   //开启aspectJ动态代理功能 -->
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--            <artifactId>spring-boot-starter-aop</artifactId>-->
+<!--        </dependency>-->
     </dependencies>
     <dependencyManagement>
         <dependencies>

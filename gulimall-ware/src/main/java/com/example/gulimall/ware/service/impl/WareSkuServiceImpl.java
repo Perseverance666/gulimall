@@ -118,6 +118,11 @@ public class WareSkuServiceImpl extends ServiceImpl<WareSkuDao, WareSkuEntity> i
     /**
      * 保存订单之后的锁库存操作
      * 原本应该按照下单的收货地址，找到一个就近仓库，锁定库存。(此处就省略了)
+     *
+     * 库存解锁的场景
+     * 1）、下订单成功，订单过期没有支付被系统自动取消、被用户手动取消。都要解锁库存
+     * 2）、下订单成功，库存锁定成功，接下来的业务调用失败，导致订单回滚。之前锁定的库存就要自动解锁。
+     *
      * @param vo
      * @return
      */

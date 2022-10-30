@@ -13,12 +13,18 @@ spring:
       seata:
         tx-service-group:
 
+
   application:
     name: gulimall-ware
 
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
+
+  rabbitmq:
+    host: 192.168.138.102
+    port: 5672
+    virtual-host: /
 
 
 mybatis-plus:

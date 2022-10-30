@@ -17,7 +17,6 @@ import com.example.gulimall.order.interceptor.LoginInterceptor;
 import com.example.gulimall.order.service.OrderItemService;
 import com.example.gulimall.order.to.OrderCreateTo;
 import com.example.gulimall.order.vo.*;
-import io.seata.spring.annotation.GlobalTransactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.BoundHashOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;

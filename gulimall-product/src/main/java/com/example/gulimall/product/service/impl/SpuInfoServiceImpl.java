@@ -14,7 +14,6 @@ import com.example.gulimall.product.feign.SearchFeignService;
 import com.example.gulimall.product.feign.WareFeignService;
 import com.example.gulimall.product.service.*;
 import com.example.gulimall.product.vo.*;
-import io.seata.spring.annotation.GlobalTransactional;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;

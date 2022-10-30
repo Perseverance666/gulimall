@@ -54,7 +54,7 @@ import org.springframework.session.data.redis.config.annotation.web.http.EnableR
  *
  */
 
-@EnableAspectJAutoProxy(exposeProxy = true)         //开启aspectJ动态代理功能
+//@EnableAspectJAutoProxy(exposeProxy = true)         //开启aspectJ动态代理功能
 @EnableRedisHttpSession
 @EnableRabbit
 @EnableFeignClients
