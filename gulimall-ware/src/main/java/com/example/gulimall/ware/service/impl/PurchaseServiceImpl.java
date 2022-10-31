@@ -1,7 +1,7 @@
 package com.example.gulimall.ware.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.example.common.WareConstant;
+import com.example.common.constant.WareConstant;
 import com.example.common.utils.R;
 import com.example.gulimall.ware.entity.PurchaseDetailEntity;
 import com.example.gulimall.ware.service.PurchaseDetailService;

@@ -24,6 +24,11 @@ spring:
     store-type: redis         #SpringSession将session数据存入redis解决集群问题
 
 
+logging:
+  level:
+    com.example.gulimall: error
+    com.alibaba.nacos.client.naming: WARN
+
 
 #自定义的，第三方gitee登录功能配置
 oauth2:

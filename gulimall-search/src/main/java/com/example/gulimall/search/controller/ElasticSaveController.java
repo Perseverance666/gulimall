@@ -1,6 +1,6 @@
 package com.example.gulimall.search.controller;
 
-import com.example.common.es.SkuEsModel;
+import com.example.common.to.es.SkuEsModel;
 import com.example.common.exception.BizCodeEnum;
 import com.example.common.utils.R;
 import com.example.gulimall.search.service.ProductSaveService;

@@ -3,7 +3,7 @@ package com.example.gulimall.product.service.impl;
 import com.alibaba.fastjson.TypeReference;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.example.common.constant.ProductConstant;
-import com.example.common.es.SkuEsModel;
+import com.example.common.to.es.SkuEsModel;
 import com.example.common.to.SkuHasStockTo;
 import com.example.common.to.SkuReductionTo;
 import com.example.common.to.SpuBoundTo;

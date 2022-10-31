@@ -2,7 +2,7 @@ package com.example.gulimall.search.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
-import com.example.common.es.SkuEsModel;
+import com.example.common.to.es.SkuEsModel;
 import com.example.common.utils.R;
 import com.example.gulimall.search.config.ElasticSearchConfig;
 import com.example.gulimall.search.constant.EsConstant;

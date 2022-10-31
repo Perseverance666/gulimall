@@ -1,11 +1,34 @@
-package com.example.common;
+package com.example.common.constant;
 
 /**
- * @Date: 2022/9/26 20:01
+ * @Date: 2022/10/31 19:33
  */
-
-
 public class WareConstant {
+
+    public enum LockStatusEnum{
+
+        LOCKED(1,"已锁定"),
+        UNLOCKED(2,"已解锁"),
+        DEDUCTED(3,"已扣减");
+
+
+        private Integer code;
+        private String msg;
+
+        LockStatusEnum(Integer code, String msg) {
+            this.code = code;
+            this.msg = msg;
+        }
+
+        public Integer getCode() {
+            return code;
+        }
+
+        public String getMsg() {
+            return msg;
+        }
+    }
+
     public enum  PurchaseStatusEnum{
         CREATED(0,"新建"),ASSIGNED(1,"已分配"),
         RECEIVE(2,"已领取"),FINISH(3,"已完成"),

@@ -1,5 +1,5 @@
 package com.example.gulimall.search.vo;
-import com.example.common.es.SkuEsModel;
+import com.example.common.to.es.SkuEsModel;
 import lombok.Data;
 
 import java.util.ArrayList;

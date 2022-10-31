@@ -1,5 +1,6 @@
 package com.example.gulimall.ware.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.springframework.stereotype.Service;
 import java.util.Map;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -24,6 +25,19 @@ public class WareOrderTaskServiceImpl extends ServiceImpl<WareOrderTaskDao, Ware
         );
 
         return new PageUtils(page);
+    }
+
+    /**
+     * 根据订单后查询库存工作单信息
+     * @param orderSn
+     * @return
+     */
+    @Override
+    public WareOrderTaskEntity getOrderTaskByOrderSn(String orderSn) {
+        LambdaQueryWrapper<WareOrderTaskEntity> lqw = new LambdaQueryWrapper<>();
+        lqw.eq(WareOrderTaskEntity::getOrderSn,orderSn);
+        WareOrderTaskEntity task = this.getOne(lqw);
+        return task;
     }
 
 }

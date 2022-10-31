@@ -3,6 +3,7 @@ package com.example.gulimall.order.interceptor;
 import com.example.common.constant.AuthConstant;
 import com.example.common.vo.MemberRespVo;
 import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,6 +22,14 @@ public class LoginInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        //MQ监听器执行远程调用order的getOrderByOrderSn,无法获取cookie，无法判断是否登录，故不进行拦截
+        String uri = request.getRequestURI();
+        AntPathMatcher antPathMatcher = new AntPathMatcher();
+        boolean match = antPathMatcher.match("/order/order/orderSn/**", uri);
+        if(match){
+            return true;
+        }
+
         MemberRespVo attribute = (MemberRespVo) request.getSession().getAttribute(AuthConstant.LOGIN_USER);
         if(attribute == null){
             //没登录，返回登录页面

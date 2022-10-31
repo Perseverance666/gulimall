@@ -27,13 +27,6 @@ public class RabbitMqConfig {
     private RabbitTemplate rabbitTemplate;
 
 
-    @RabbitListener(queues = "order.release.order.queue")
-    public void testListener(OrderEntity order, Message message, Channel channel) throws IOException {
-        System.out.println("收到过期的订单："+order.getOrderSn());
-        channel.basicAck(message.getMessageProperties().getDeliveryTag(),false);
-
-    }
-
     /**
      * 延时队列，没有人监听
      * @return
@@ -49,7 +42,7 @@ public class RabbitMqConfig {
         Map<String,Object> args = new HashMap<>();
         args.put("x-dead-letter-exchange","order-event-exchange");
         args.put("x-dead-letter-routing-key","order.release.order");
-        args.put("x-message-ttl",10000);
+        args.put("x-message-ttl",60000);
         //String name, boolean durable, boolean exclusive, boolean autoDelete, Map<String, Object> arguments
         return new Queue("order.delay.queue",true,false,false,args);
     }
@@ -100,6 +93,21 @@ public class RabbitMqConfig {
                 "order.release.order",
                 null);
     }
+
+    /**
+     * 订单释放直接和库存释放进行绑定
+     * 关闭订单后，发送消息，去进行解锁库存
+     * @return
+     */
+    @Bean
+    public Binding orderReleaseOtherBinding() {
+        return new Binding("stock.release.stock.queue",
+                Binding.DestinationType.QUEUE,
+                "order-event-exchange",
+                "order.release.other.#",
+                null);
+    }
+
 
     /**
      * 使用JSON序列化机制，进行消息转换

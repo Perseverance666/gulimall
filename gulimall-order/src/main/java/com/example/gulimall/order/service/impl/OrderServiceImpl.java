@@ -1,14 +1,14 @@
 package com.example.gulimall.order.service.impl;
 
 import com.alibaba.fastjson.TypeReference;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
-import com.example.common.constant.CartConstant;
 import com.example.common.constant.OrderConstant;
 import com.example.common.exception.RRException;
+import com.example.common.to.mq.OrderTo;
 import com.example.common.utils.R;
 import com.example.common.vo.MemberRespVo;
 import com.example.gulimall.order.entity.OrderItemEntity;
-import com.example.gulimall.order.enume.OrderStatusEnum;
 import com.example.gulimall.order.feign.CartFeignService;
 import com.example.gulimall.order.feign.MemberFeignService;
 import com.example.gulimall.order.feign.ProductFeignService;
@@ -17,8 +17,9 @@ import com.example.gulimall.order.interceptor.LoginInterceptor;
 import com.example.gulimall.order.service.OrderItemService;
 import com.example.gulimall.order.to.OrderCreateTo;
 import com.example.gulimall.order.vo.*;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.BoundHashOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Service;
@@ -62,6 +63,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
     private ProductFeignService productFeignService;
     @Autowired
     private OrderItemService orderItemService;
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -71,6 +74,32 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
         );
 
         return new PageUtils(page);
+    }
+
+    /**
+     * 关闭订单
+     *
+     * 关闭订单后，可能由于关闭订单卡顿等问题，导致先解锁库存再关闭订单，此时由于订单还是待付款状态，无法解锁库存，
+     * 等到关闭订单后，这个库存就永远无法被解锁。
+     * 解决方法：在关闭订单后，发送消息，去进行解锁库存。 双重解锁库存确保安全
+     * @param order
+     */
+    @Override
+    public void closeOrder(OrderEntity order) {
+        //只有订单状态是待付款才能关闭
+        if(order.getStatus() == OrderConstant.OrderStatusEnum.CREATE_NEW.getCode()){
+            //1、关闭订单
+            order.setStatus(OrderConstant.OrderStatusEnum.CANCLED.getCode());
+            this.updateById(order);
+            //2、关闭订单后，要发送消息，去进行解锁库存
+            OrderTo orderTo = new OrderTo();
+            BeanUtils.copyProperties(order,orderTo);
+            try {
+                rabbitTemplate.convertAndSend("order-event-exchange", "order.release.other", orderTo);
+            }catch (Exception e){
+
+            }
+        }
     }
 
     /**
@@ -192,8 +221,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
                     //锁库存成功
                     response.setOrder(order.getOrder());
                     response.setCode(0);
-
-                    int i = 10/0; //模拟异常，订单回滚，库存不滚
+                    //6、给mq发送消息，告诉订单创建成功
+                    rabbitTemplate.convertAndSend("order-event-exchange", "order.create.order", order.getOrder());
+//                    int i = 10/0; //模拟异常，订单回滚，库存不滚
                     return response;
                 }else {
                     //锁库存失败，抛异常，进行回滚
@@ -320,7 +350,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
         order.setCreateTime(new Date());
         order.setPayType(vo.getPayType());
         //待付款状态
-        order.setStatus(OrderStatusEnum.CREATE_NEW.getCode());
+        order.setStatus(OrderConstant.OrderStatusEnum.CREATE_NEW.getCode());
         order.setAutoConfirmDay(7);
         order.setNote(vo.getNote());
         //设置删除状态0代表未删除
@@ -398,6 +428,18 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
         return orderItem;
     }
 
+    /**
+     * 根据订单号查询订单信息
+     * @param orderSn
+     * @return
+     */
+    @Override
+    public OrderEntity getOrderByOrderSn(String orderSn) {
+        LambdaQueryWrapper<OrderEntity> lqw = new LambdaQueryWrapper<>();
+        lqw.eq(OrderEntity::getOrderSn,orderSn);
+        OrderEntity order = this.getOne(lqw);
+        return order;
+    }
 
 
 }

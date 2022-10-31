@@ -1,6 +1,11 @@
 package com.example.gulimall.ware.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.example.common.constant.OrderConstant;
+import com.example.common.constant.WareConstant;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 import java.util.Map;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -24,6 +29,20 @@ public class WareOrderTaskDetailServiceImpl extends ServiceImpl<WareOrderTaskDet
         );
 
         return new PageUtils(page);
+    }
+
+    /**
+     * 根据库存工作单id，查询已锁定(lock_status = 1)的库存工作单详情信息
+     * @param taskId
+     * @return
+     */
+    @Override
+    public List<WareOrderTaskDetailEntity> listByTaskIdWithLocked(Long taskId) {
+        LambdaQueryWrapper<WareOrderTaskDetailEntity> lqw = new LambdaQueryWrapper<>();
+        lqw.eq(WareOrderTaskDetailEntity::getTaskId,taskId)
+                .eq(WareOrderTaskDetailEntity::getLockStatus, WareConstant.LockStatusEnum.LOCKED.getCode());
+        List<WareOrderTaskDetailEntity> list = this.list(lqw);
+        return list;
     }
 
 }
