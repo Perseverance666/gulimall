@@ -95,9 +95,11 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
             OrderTo orderTo = new OrderTo();
             BeanUtils.copyProperties(order,orderTo);
             try {
+                //TODO 保证消息一定会发送出去，每一个消息都可以做好日志记录（给数据库保存每一个消息的详细信息）。
+                //TODO 定期扫描数据库将失败的消息再发送一遍；
                 rabbitTemplate.convertAndSend("order-event-exchange", "order.release.other", orderTo);
             }catch (Exception e){
-
+                //TODO 将没法送成功的消息进行重试发送。
             }
         }
     }
@@ -161,10 +163,17 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
 
     /**
      * 下单功能
-     * 验证令牌 -> 创建订单 -> 验价(可选) -> 保存订单数据 -> 锁库存
      *
-     * 本地事务，在分布式系统，只能控制住自己的回滚，控制不了其他服务的回滚
-     * 分布式事务： 最大原因。网络问题+分布式机器。
+     * 1、验证令牌 -> 创建订单 -> 验价(可选) -> 保存订单数据 -> 锁库存
+     * 2、锁定库存成功后，发消息给mq告诉订单创建成功(消息进入order.delay.queue)
+     * -> 经过1分钟订单过期(消息进入order.release.order.queue)
+     * -> orderCloseListener监听到消息，开始关闭订单
+     * -> 关闭订单后，发消息给mq告诉解锁库存(消息进入stock.release.stock.queue)
+     * -> handleOrderCloseRelease监听到消息，由于订单关闭，开始解锁库存
+     *
+     * 事务概念：
+     * 1、本地事务，在分布式系统，只能控制住自己的回滚，控制不了其他服务的回滚
+     * 2、分布式事务： 最大原因：网络问题+分布式机器。
      * @param vo
      * @return
      */
@@ -221,9 +230,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
                     //锁库存成功
                     response.setOrder(order.getOrder());
                     response.setCode(0);
+//                    int i = 10/0; //模拟异常，订单回滚，库存不滚
                     //6、给mq发送消息，告诉订单创建成功
                     rabbitTemplate.convertAndSend("order-event-exchange", "order.create.order", order.getOrder());
-//                    int i = 10/0; //模拟异常，订单回滚，库存不滚
                     return response;
                 }else {
                     //锁库存失败，抛异常，进行回滚

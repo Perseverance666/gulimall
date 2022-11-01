@@ -140,8 +140,17 @@ public class WareSkuServiceImpl extends ServiceImpl<WareSkuDao, WareSkuEntity> i
      * 原本应该按照下单的收货地址，找到一个就近仓库，锁定库存。(此处就省略了)
      *
      * 库存解锁的场景
-     * 1）、下订单成功，订单过期没有支付被系统自动取消、被用户手动取消。都要解锁库存
-     * 2）、下订单成功，库存锁定成功，接下来的业务调用失败，导致订单回滚。之前锁定的库存就要自动解锁。
+     * 1、下订单成功，订单过期没有支付被系统自动取消、被用户手动取消。都要解锁库存
+     *   1)、锁库存成功后，下单成功，发消息给mq告诉订单创建成功(消息进入order.delay.queue)
+     *   2)、经过1分钟订单过期，或者被用户手动取消(消息进入order.release.order.queue)
+     *   3)、orderCloseListener监听到消息，开始关闭订单
+     *   4)、关闭订单后，发消息给mq告诉解锁库存(消息进入stock.release.stock.queue)
+     *   5)、handleOrderCloseRelease监听到消息，由于订单关闭，开始解锁库存
+     *
+     * 2、下订单成功，库存锁定成功，接下来的业务调用失败，导致订单回滚。之前锁定的库存就要自动解锁。
+     *   1)、锁库存成功后，发消息给mq告诉锁定库存成功(消息进入stock.delay.queue)
+     *   2)、经过2分钟后(消息进入stock.release.stock.queue)，开始检测库存工作单和订单信息
+     *   3)、若库存工作详情单状态为已锁定，没有订单或者订单为已取消状态，开始解锁库存
      *
      * @param vo
      * @return
