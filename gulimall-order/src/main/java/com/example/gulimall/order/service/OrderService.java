@@ -5,6 +5,7 @@ import com.example.common.utils.PageUtils;
 import com.example.gulimall.order.entity.OrderEntity;
 import com.example.gulimall.order.vo.OrderConfirmVo;
 import com.example.gulimall.order.vo.OrderSubmitVo;
+import com.example.gulimall.order.vo.PayVo;
 import com.example.gulimall.order.vo.SubmitOrderRespVo;
 
 import java.util.Map;
@@ -28,5 +29,9 @@ public interface OrderService extends IService<OrderEntity> {
     OrderEntity getOrderByOrderSn(String orderSn);
 
     void closeOrder(OrderEntity order);
+
+    PayVo getOrderPayByOrderSn(String orderSn);
+
+    PageUtils queryPageWithItem(Map<String, Object> params);
 }
 

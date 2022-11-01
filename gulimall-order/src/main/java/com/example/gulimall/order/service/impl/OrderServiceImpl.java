@@ -77,6 +77,58 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
     }
 
     /**
+     * 分页查询当前登录用户的所有订单及订单项信息
+     * @param params
+     * @return
+     */
+    @Override
+    public PageUtils queryPageWithItem(Map<String, Object> params) {
+        MemberRespVo memberRespVo = LoginInterceptor.loginUser.get();
+        LambdaQueryWrapper<OrderEntity> lqw = new LambdaQueryWrapper<>();
+        lqw.eq(OrderEntity::getMemberId,memberRespVo.getId());
+        lqw.orderByDesc(OrderEntity::getId);
+        IPage<OrderEntity> page = this.page(new Query<OrderEntity>().getPage(params),lqw);
+
+        List<OrderEntity> collect = page.getRecords().stream().map(order -> {
+            LambdaQueryWrapper<OrderItemEntity> lqw2 = new LambdaQueryWrapper<>();
+            lqw2.eq(OrderItemEntity::getOrderSn, order.getOrderSn());
+            List<OrderItemEntity> orderItems = orderItemService.list(lqw2);
+            order.setItemEntities(orderItems);
+            return order;
+        }).collect(Collectors.toList());
+
+        page.setRecords(collect);
+        return new PageUtils(page);
+    }
+
+    /**
+     * 根据订单号，查询订单支付信息
+     * @param orderSn
+     * @return
+     */
+    @Override
+    public PayVo getOrderPayByOrderSn(String orderSn) {
+        PayVo payVo = new PayVo();
+        //设置商户订单号
+        payVo.setOut_trade_no(orderSn);
+
+        OrderEntity order = this.getOrderByOrderSn(orderSn);
+        BigDecimal payAmount = order.getPayAmount().setScale(2, BigDecimal.ROUND_UP);
+        //设置付款金额
+        payVo.setTotal_amount(payAmount.toString());
+
+        List<OrderItemEntity> order_sn = orderItemService.list(new QueryWrapper<OrderItemEntity>().eq("order_sn", orderSn));
+        OrderItemEntity entity = order_sn.get(0);
+        //将第一个商品设置为订单标题
+        payVo.setSubject(entity.getSkuName());
+
+        //将第一个商品的销售属性设置为商品描述
+        payVo.setBody(entity.getSkuAttrsVals());
+        return payVo;
+    }
+
+
+    /**
      * 关闭订单
      *
      * 关闭订单后，可能由于关闭订单卡顿等问题，导致先解锁库存再关闭订单，此时由于订单还是待付款状态，无法解锁库存，

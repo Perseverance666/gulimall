@@ -56,11 +56,34 @@ logging:
     com.example.gulimall: error
     com.alibaba.nacos.client.naming: WARN
 
-#自定义的，用于自己配置线程池
+#以下都是自定义的配置
+#用于自己配置线程池
 gulimall:
   thread:
     core-size: 20
     max-size: 200
     keep-alive-time: 10
+
+#支付宝相关配置
+alipay:
+  #应用id
+  app-id: 2021000121684688
+  #商户私钥
+  merchant-private-key: MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCTAodEHdHW2PL5KgyF/tm1Elnxj7wToYY1ULvzbqxTgCqVU6oY7X7PfzzSLNN2Kj5/NHSWJ2f2d9TdVOQYuYj/5qeVOslS5FMX+8RMzBpTu7GKfjbGi9/+FMvX3Xjdlcw3DsaeiauTHpuu81wcewAiPZR7arJimd2Bw3KyCZDVoFEmC7Ldbpipv1L83ntCT2H3iIMpQm4DEjuNZqyfnQ1dxRt/A0cpbbF7fwSqbfZJ20ph7O17t4BDdPk4VeKog6OWd3CvhCaGE6cWoW06CP2ql9pUNbRYo71GzCirlgv6pYLawep5CQ43YjlaDgFhT31RyhAXLCLBPffQS9WWBXTDAgMBAAECggEAHcu+ZMTyeexA2tV18lakA3oztq0ePpBXZkj1vzIoRUhN2TQ63pCMSjwMtMCXH3USc6/LDX/xJ1hEUZPaI1S/erZiMvHWSjGy0cKal8Iqd9wr8NkB+x3wiUvnwNnHnIm2+VXKVemrV8c1YLE8cx1O+qGmjZkjjK6I4bsebQ1ZSKLF31hPCY8Ky5HKxyGeidFyaUhsriB0ccK9/Qd+krqZq2C9G1MtJNPay+Pwydu0g4r5y7hlCQ45EgcBERoN9mz3p865S+bhedVnDqjDzJIPrNTQh8iuUvrZCNL4Hvdr9zCSItmNdCZnpfknko2y8mOfD4D/UPlqR1uvIWP4pdq3mQKBgQDPXyzj/rIqHxFTm1n3ahoCPWLFciB2+i/ctp+INWKoKHempYuTetljsNCSgK3ZgE4d/I492DGDlNhLDonFzn6Ta0iKjh7JObO5df9KVhvS0Jx+jXhd+NgQHBH3/vVXMPbsslOTEy7DISQhE3GTJgi0YNQPOEVh3v7PJrRBjBTFPQKBgQC1e73dE550snxiAEdoUIxAR3pKlqy8sSG+fnroKf0Zrb/ZpQ88CV+PxGxADswwdcNrcWljHgQbAzfODsFbdaYMApZkQjHcQOP3zWNbKQqNuQkJAfEBbSrnIFvGIsJgg/s6X3rh0g18Ukzd08JtRCZ5oacG8TJHS9y0RdqH9UrB/wKBgQCvZPmsEXWSCNr30zMB//zlnhQXmlL5Lt0imlhOtZCvWCLzkZt/bu3F0vxmnW3txAbOeBm7F0ux1kgnG7HN27zVZW1iu5gwbJylpbb6oeBAq+9hXrjLCrl8zrEoB75tM932D1J+2D+6DSLo0vBCHG5KWoeiI98TS7BLd5oIwrmipQKBgQCWON9oaBz5q+SZmnGBP2tYqdHoe+BwMI8mB7vlARyobNIpbh+2KmwXrReNzrHmSxR/k1kQ2n+7fGZtAnm7Ix9XQa0LQF/VWUFalYBwrQA3X7rC4gCElcC1oGtXDt6m1ZjXMMGeuyi+h8FovShrGcZfWBfR/0UHDxyZfFjvwXMoMQKBgC35hV+bP+SFw4vI1SN0EBxuq8enDRJTNoAhndXx6lQj86xSkac4qv8hCpt5WEyu9SnHnahQuzsJjdXphTDaC7TsAkrD9zOClNnllMvVpxLp0xFi6VsYImfpxbNndadbRNTuxJn4RvbY3YeZOkygcwgHuUK9PGFiEIT4D6OTODmd
+  #支付宝公钥
+  alipay-public-key: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArwRbxLqS7bY6iLZksV3ZTG9AzxOrwXGRzX1z0JHZj83Rr9WRKupV8pPQyzl1nzZfkRBrihIYP01DawVVCIwdsMTqg3f851ymhMCgrKOFMQboC4XmvbGb8MU3dKrDv+YKWJjU6/QYPF7Z44wYuW3Y9+fII9/wBZ3HZVj/PzHqnvbWPV7DDRaGW9sJH/JlkY49cThxd9b9W2IYgJaz08of5bvh2hLI7claS6tobYQOyxBBon7SEmFB13skr43dOqdPjsp0CSe94Qu3Iq95hlitFdnnGkNQpgmolMjK6QRaRX46dr7AB1HT+IsWH5BE6td4JF0fYQ9LbEdBGgIC5chPqQIDAQAB
+  #支付宝网关
+  gateway-url: https://openapi.alipaydev.com/gateway.do
+  #异步通知
+  notify-url: http://xb6cg22x28.52http.net/order/pay/alipay/success
+  #跳转页面
+  return_url: http://order.gulimall.com/list.html
+  #签名方式
+  sign-type: RSA2
+  #字符编码格式
+  charset: utf-8
+  #超时时间
+  timeout: 30m
+
 
 

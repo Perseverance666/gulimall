@@ -25,8 +25,9 @@ public class LoginInterceptor implements HandlerInterceptor {
         //MQ监听器执行远程调用order的getOrderByOrderSn,无法获取cookie，无法判断是否登录，故不进行拦截
         String uri = request.getRequestURI();
         AntPathMatcher antPathMatcher = new AntPathMatcher();
-        boolean match = antPathMatcher.match("/order/order/orderSn/**", uri);
-        if(match){
+        boolean match = antPathMatcher.match("/order/order/status/**", uri);
+        boolean match1 = antPathMatcher.match("/payed/notify", uri);
+        if(match || match1){
             return true;
         }
 
