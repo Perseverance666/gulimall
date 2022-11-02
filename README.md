@@ -1,7 +1,8 @@
 # gulimall
 
 #### 介绍
-前端接口文档地址：https://easydoc.net/s/78237135/ZUqEdvA4/hKJTcbfd
+1. 前端接口文档地址：https://easydoc.net/s/78237135/ZUqEdvA4/hKJTcbfd
+2. 新增商品、商品上架、全文检索、下单功能比较折磨人
 
 #### 软件架构
 软件架构说明
@@ -15,7 +16,7 @@
 
 #### 使用说明
 
-1.  新增商品、商品上架、全文检索、下单功能比较折磨人
+1. 由于使用的用于内网穿透的natapp是免费隧道，会不定时更换域名，故需要不定时修改nignx,application.yml相关配置
 
 
 #### 参与贡献

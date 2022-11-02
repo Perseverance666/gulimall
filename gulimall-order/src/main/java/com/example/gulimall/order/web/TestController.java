@@ -15,7 +15,7 @@ import java.util.UUID;
  */
 
 @Controller
-public class HelloController {
+public class TestController {
     @Autowired
     private RabbitTemplate rabbitTemplate;
 

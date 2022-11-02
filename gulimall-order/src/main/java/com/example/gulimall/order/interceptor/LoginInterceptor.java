@@ -31,6 +31,7 @@ public class LoginInterceptor implements HandlerInterceptor {
             return true;
         }
 
+
         MemberRespVo attribute = (MemberRespVo) request.getSession().getAttribute(AuthConstant.LOGIN_USER);
         if(attribute == null){
             //没登录，返回登录页面

@@ -49,5 +49,9 @@
         <result property="modifyTime" column="modify_time"/>
     </resultMap>
 
+    <update id="updateOrderStatusByOrderSn">
+        update 'oms_order' set `sstatus`s = #{code} where order_sn = #{orderSn}
+    </update>
+
 
 </mapper>

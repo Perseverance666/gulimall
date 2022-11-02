@@ -9,12 +9,14 @@ import com.example.common.to.mq.OrderTo;
 import com.example.common.utils.R;
 import com.example.common.vo.MemberRespVo;
 import com.example.gulimall.order.entity.OrderItemEntity;
+import com.example.gulimall.order.entity.PaymentInfoEntity;
 import com.example.gulimall.order.feign.CartFeignService;
 import com.example.gulimall.order.feign.MemberFeignService;
 import com.example.gulimall.order.feign.ProductFeignService;
 import com.example.gulimall.order.feign.WareFeignService;
 import com.example.gulimall.order.interceptor.LoginInterceptor;
 import com.example.gulimall.order.service.OrderItemService;
+import com.example.gulimall.order.service.PaymentInfoService;
 import com.example.gulimall.order.to.OrderCreateTo;
 import com.example.gulimall.order.vo.*;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -65,6 +67,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
     private OrderItemService orderItemService;
     @Autowired
     private RabbitTemplate rabbitTemplate;
+    @Autowired
+    private PaymentInfoService paymentInfoService;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -74,6 +78,34 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
         );
 
         return new PageUtils(page);
+    }
+
+    /**
+     * 处理支付宝的支付结果
+     * @param vo
+     * @return
+     */
+    @Override
+    public String handlePayResult(PayAsyncVo vo) {
+        //1、保存交易流水
+        PaymentInfoEntity paymentInfo = new PaymentInfoEntity();
+        paymentInfo.setAlipayTradeNo(vo.getTrade_no());
+        paymentInfo.setOrderSn(vo.getOut_trade_no());
+        paymentInfo.setCallbackTime(vo.getNotify_time());
+        paymentInfo.setPaymentStatus(vo.getTrade_status());
+        paymentInfoService.save(paymentInfo);
+
+        //2、修改订单状态
+        //2.1、首先判断订单是否交易成功，这个的TRADE_SUCCESS等都是支付宝规定的
+        if (vo.getTrade_status().equals("TRADE_SUCCESS") || vo.getTrade_status().equals("TRADE_FINISHED")) {
+            String orderSn = vo.getOut_trade_no();
+            this.baseMapper.updateOrderStatusByOrderSn(orderSn,OrderConstant.OrderStatusEnum.PAYED.getCode());
+            return "success";
+        }else{
+            System.out.println("订单交易失败...");
+            return "error";
+        }
+
     }
 
     /**
