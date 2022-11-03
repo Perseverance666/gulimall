@@ -221,6 +221,7 @@ public class WareSkuServiceImpl extends ServiceImpl<WareSkuDao, WareSkuEntity> i
         if(taskDetail == null || taskDetail.getLockStatus() != WareConstant.LockStatusEnum.LOCKED.getCode()){
             //1.1、库存工作详情单中没有数据，即没有锁住库存，无需解锁
             //1.2、库存工作详情单状态不是已锁定，是已解锁或者已扣除，不能解锁
+            System.out.println("无需解锁..");
         }else{
             //1.3、库存工作详情单中有数据，证明库存锁定成功
             //2、查询是否有订单
@@ -230,7 +231,10 @@ public class WareSkuServiceImpl extends ServiceImpl<WareSkuDao, WareSkuEntity> i
                 OrderTo order = r.getData("order", new TypeReference<OrderTo>() {});
                 if(order == null || order.getStatus() == OrderConstant.OrderStatusEnum.CANCLED.getCode()){
                     //3、没有订单信息，或者订单为已取消状态，需要解锁库存
+                    System.out.println("订单为已取消状态或没有订单信息，开始解锁库存...");
                     unLockStock(detail.getSkuId(),detail.getWareId(),detail.getSkuNum(),detail.getId());
+                }else {
+                    System.out.println("无需解锁..");
                 }
             }else{
                 throw new RRException("远程调用order的getOrderByOrderSn失败");
@@ -253,6 +257,7 @@ public class WareSkuServiceImpl extends ServiceImpl<WareSkuDao, WareSkuEntity> i
         List<WareOrderTaskDetailEntity> taskDetails = wareOrderTaskDetailService.listByTaskIdWithLocked(taskId);
         for (WareOrderTaskDetailEntity taskDetail : taskDetails) {
             //解锁库存
+            System.out.println("由于订单关闭，开始解锁库存...");
             unLockStock(taskDetail.getSkuId(),taskDetail.getWareId(),taskDetail.getSkuNum(),taskDetail.getId());
         }
     }

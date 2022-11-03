@@ -39,8 +39,8 @@ spring:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
 
-#  mvc:
-#    date-format: yyyy-MM-dd HH:mm:ss
+  mvc:
+    date-format: yyyy-MM-dd HH:mm:ss
 
 
 
@@ -79,7 +79,7 @@ alipay:
   #支付宝网关
   gateway-url: https://openapi.alipaydev.com/gateway.do
   #异步通知
-  notify-url: http://wae595.natappfree.cc/payed/notify
+  notify-url: http://k8qd3w.natappfree.cc/payed/notify
   #跳转页面
   return_url: http://order.gulimall.com/list.html
   #签名方式

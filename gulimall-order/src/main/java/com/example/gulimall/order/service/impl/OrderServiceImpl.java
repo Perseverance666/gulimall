@@ -166,12 +166,15 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
      * 关闭订单后，可能由于关闭订单卡顿等问题，导致先解锁库存再关闭订单，此时由于订单还是待付款状态，无法解锁库存，
      * 等到关闭订单后，这个库存就永远无法被解锁。
      * 解决方法：在关闭订单后，发送消息，去进行解锁库存。 双重解锁库存确保安全
-     * @param order
+     * @param oldOrder
      */
     @Override
-    public void closeOrder(OrderEntity order) {
+    public void closeOrder(OrderEntity oldOrder) {
+        //注：一定查询数据库最新状态，有可能传过来的order是刚创建订单时的数据，若支付之后status会变
+        OrderEntity order = this.getById(oldOrder.getId());
         //只有订单状态是待付款才能关闭
         if(order.getStatus() == OrderConstant.OrderStatusEnum.CREATE_NEW.getCode()){
+            System.out.println("收到过期的订单信息，开始关闭订单："+order.getOrderSn()+"==>"+order.getId());
             //1、关闭订单
             order.setStatus(OrderConstant.OrderStatusEnum.CANCLED.getCode());
             this.updateById(order);

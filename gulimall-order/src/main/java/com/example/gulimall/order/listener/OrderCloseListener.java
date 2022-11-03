@@ -24,7 +24,6 @@ public class OrderCloseListener {
 
     @RabbitHandler
     public void orderCloseListener(OrderEntity order, Message message, Channel channel) throws IOException {
-        System.out.println("收到过期的订单信息，准备关闭订单："+order.getOrderSn()+"==>"+order.getId());
         try {
             orderService.closeOrder(order);
             //TODO 手动调用支付宝收单；(查看支付宝官方文档)

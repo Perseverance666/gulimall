@@ -50,7 +50,7 @@
     </resultMap>
 
     <update id="updateOrderStatusByOrderSn">
-        update 'oms_order' set `sstatus`s = #{code} where order_sn = #{orderSn}
+        update oms_order set status = #{code} where order_sn = #{orderSn}
     </update>
 
 

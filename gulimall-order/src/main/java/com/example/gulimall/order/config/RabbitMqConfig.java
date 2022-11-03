@@ -42,7 +42,7 @@ public class RabbitMqConfig {
         Map<String,Object> args = new HashMap<>();
         args.put("x-dead-letter-exchange","order-event-exchange");
         args.put("x-dead-letter-routing-key","order.release.order");
-        args.put("x-message-ttl",60000);
+        args.put("x-message-ttl",180000); //订单3分钟后超时
         //String name, boolean durable, boolean exclusive, boolean autoDelete, Map<String, Object> arguments
         return new Queue("order.delay.queue",true,false,false,args);
     }

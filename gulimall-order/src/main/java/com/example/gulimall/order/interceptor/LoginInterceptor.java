@@ -22,10 +22,11 @@ public class LoginInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        //MQ监听器执行远程调用order的getOrderByOrderSn,无法获取cookie，无法判断是否登录，故不进行拦截
         String uri = request.getRequestURI();
         AntPathMatcher antPathMatcher = new AntPathMatcher();
-        boolean match = antPathMatcher.match("/order/order/status/**", uri);
+        //MQ监听器执行远程调用order的getOrderByOrderSn,无法获取cookie，无法判断是否登录，故不进行拦截
+        boolean match = antPathMatcher.match("/order/order/orderSn/**", uri);
+        //支付宝的异步通知，不进行拦截
         boolean match1 = antPathMatcher.match("/payed/notify", uri);
         if(match || match1){
             return true;

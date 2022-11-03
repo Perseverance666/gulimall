@@ -42,7 +42,7 @@ public class RabbitMqConfig {
         Map<String,Object> args = new HashMap<>();
         args.put("x-dead-letter-exchange","stock-event-exchange");
         args.put("x-dead-letter-routing-key","stock.release");
-        args.put("x-message-ttl",120000);
+        args.put("x-message-ttl",300000);   //库存5分钟后超时
         return new Queue("stock.delay.queue",true,false,false,args);
     }
 
