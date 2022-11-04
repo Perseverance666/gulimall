@@ -2,7 +2,8 @@
 
 #### 介绍
 1. 前端接口文档地址：https://easydoc.net/s/78237135/ZUqEdvA4/hKJTcbfd
-2. 新增商品、商品上架、全文检索、下单功能比较折磨人
+2. 支付宝沙箱买家账号:rsguao0042@sandbox.com  支付密码:111111
+3. 
 
 #### 软件架构
 软件架构说明
@@ -16,7 +17,10 @@
 
 #### 使用说明
 
-1. 由于使用的用于内网穿透的natapp是免费隧道，会不定时更换域名，故需要不定时修改nignx,application.yml相关配置
+1. 新增商品、商品上架、全文检索、下单功能比较折磨人
+2. 由于使用的用于内网穿透的natapp是免费隧道，重启更换域名，故需要修改nignx中gulimall.conf的监听域名
+   以及application.yml中notify-url的域名
+3. 
 
 
 #### 参与贡献

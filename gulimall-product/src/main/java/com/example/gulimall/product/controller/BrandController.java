@@ -1,4 +1,4 @@
-package com.example.gulimall.product.app;
+package com.example.gulimall.product.controller;
 
 import java.util.Arrays;
 import java.util.List;
@@ -8,7 +8,6 @@ import java.util.Map;
 import com.example.common.valid.group.AddGroup;
 import com.example.common.valid.group.UpdateGroup;
 import com.example.common.valid.group.UpdateStatusGroup;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;

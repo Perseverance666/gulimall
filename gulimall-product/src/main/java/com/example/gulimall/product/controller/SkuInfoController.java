@@ -1,6 +1,5 @@
-package com.example.gulimall.product.app;
+package com.example.gulimall.product.controller;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Map;
 

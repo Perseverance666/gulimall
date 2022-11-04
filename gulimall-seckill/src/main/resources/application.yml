@@ -1,0 +1,22 @@
+server:
+  port: 50000
+
+spring:
+  application:
+    name: gulimall-seckill
+
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+
+  redis:
+    host: 192.168.138.102
+    port: 6379
+
+  task:
+    execution:
+      pool:
+        core-size: 5    #异步任务核心线程数
+        max-size: 50    #异步任务最大线程数
+
