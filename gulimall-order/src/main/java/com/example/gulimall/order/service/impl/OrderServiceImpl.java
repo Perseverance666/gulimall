@@ -31,6 +31,7 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -239,9 +240,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
 
         //4、其他价格数据自动计算
 
-        //5、订单防重令牌
+        //5、订单防重令牌，存redis中30min
         String orderToken = UUID.randomUUID().toString().replace("-", "");
-        redisTemplate.opsForValue().set(OrderConstant.USER_ORDER_TOKEN_PREFIX + loginUser.getId(),orderToken);
+        redisTemplate.opsForValue().set(OrderConstant.USER_ORDER_TOKEN_PREFIX + loginUser.getId(),orderToken,30, TimeUnit.MINUTES);
         orderConfirmVo.setOrderToken(orderToken);
 
         CompletableFuture.allOf(memberFuture,cartFuture).get();

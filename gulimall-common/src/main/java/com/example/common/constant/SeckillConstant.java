@@ -11,6 +11,9 @@ public class SeckillConstant {
     //秒杀商品信息存入redis中的key的前缀，value为hash类型
     public static final String SECKILL_SKUS_PREFIX = "seckill:skus:";
 
-    //后面加商品随机码而不是skuId
+    //设置秒杀商品分布式信号量作为库存扣减信息，这个前缀后面加的是商品随机码而不是skuId
     public static final String SKU_STOCK_SEMAPHORE = "seckill:stock:";
+
+    //分布式锁的key，用于防止重复上架商品
+    public static final String SECKILL_UP_LOCK = "seckill:up:lock:";
 }

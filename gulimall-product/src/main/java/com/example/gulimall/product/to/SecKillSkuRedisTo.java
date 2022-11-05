@@ -1,8 +1,6 @@
-package com.example.gulimall.seckill.to;
+package com.example.gulimall.product.to;
 
 import lombok.Data;
-
-import java.math.BigDecimal;
 
 /**
  * @Date: 2022/11/4 20:36
@@ -12,9 +10,6 @@ import java.math.BigDecimal;
 public class SecKillSkuRedisTo {
     //秒杀商品信息
     private SeckillSkuTo seckillSku;
-
-    //sku的详细信息
-    private SkuInfoTo skuInfo;
 
     //当前商品秒杀的开始时间
     private Long startTime;

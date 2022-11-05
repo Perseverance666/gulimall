@@ -1,10 +1,15 @@
 package com.example.gulimall.product.service.impl;
 
+import com.alibaba.fastjson.TypeReference;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.example.common.exception.RRException;
+import com.example.common.utils.R;
 import com.example.gulimall.product.entity.SkuImagesEntity;
 import com.example.gulimall.product.entity.SpuInfoDescEntity;
 import com.example.gulimall.product.entity.SpuInfoEntity;
+import com.example.gulimall.product.feign.SeckillFeignService;
 import com.example.gulimall.product.service.*;
+import com.example.gulimall.product.to.SecKillSkuRedisTo;
 import com.example.gulimall.product.vo.SkuItemSaleAttrVo;
 import com.example.gulimall.product.vo.SkuItemVo;
 import com.example.gulimall.product.vo.SpuItemAttrGroupVo;
@@ -41,6 +46,8 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoDao, SkuInfoEntity> i
     private SkuSaleAttrValueService skuSaleAttrValueService;
     @Autowired
     private ThreadPoolExecutor executor;
+    @Autowired
+    private SeckillFeignService seckillFeignService;
 
 
     @Override
@@ -153,9 +160,20 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoDao, SkuInfoEntity> i
             skuItemVo.setGroupAttrs(spuItemAttrGroupVos);
         }, executor);
 
+        //6、查询当前sku是否参与秒杀优惠
+        CompletableFuture<Void> seckillFuture = CompletableFuture.runAsync(() -> {
+            R r = seckillFeignService.getSkuSeckillInfo(skuId);
+            if (r.getCode() != 0) {
+                throw new RRException("远程调用seckill的getSkuSeckillInfo失败");
+            }
+            SecKillSkuRedisTo seckillInfo = r.getData("data", new TypeReference<SecKillSkuRedisTo>() {
+            });
+            skuItemVo.setSeckillInfo(seckillInfo);
+        },executor);
+
 
         //等待所有任务都完成，再返回skuItemVo
-        CompletableFuture.anyOf(imagesFuture,saleAttrFuture,descFuture,baseAttrFuture).get();
+        CompletableFuture.anyOf(imagesFuture,saleAttrFuture,descFuture,baseAttrFuture,seckillFuture).get();
         return skuItemVo;
     }
 
