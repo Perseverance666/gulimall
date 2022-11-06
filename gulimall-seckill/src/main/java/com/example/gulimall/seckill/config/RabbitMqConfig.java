@@ -1,9 +1,6 @@
-package com.example.gulimall.order.config;
+package com.example.gulimall.seckill.config;
 
-import com.example.gulimall.order.entity.OrderEntity;
-import com.rabbitmq.client.Channel;
 import org.springframework.amqp.core.*;
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
@@ -13,7 +10,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.PostConstruct;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,117 +19,9 @@ import java.util.Map;
 
 @Configuration
 public class RabbitMqConfig {
+
     @Autowired
     private RabbitTemplate rabbitTemplate;
-
-
-    /**
-     * 延时队列，没有人监听
-     * @return
-     */
-    @Bean
-    public Queue orderDelayQueue(){
-        /**
-         * Map<String, Object> arguments
-         * x-dead-letter-exchange: order-event-exchange
-         * x-dead-letter-routing-key: order.release.order
-         * x-message-ttl: 60000
-         */
-        Map<String,Object> args = new HashMap<>();
-        args.put("x-dead-letter-exchange","order-event-exchange");
-        args.put("x-dead-letter-routing-key","order.release.order");
-        args.put("x-message-ttl",180000); //订单3分钟后超时
-        //String name, boolean durable, boolean exclusive, boolean autoDelete, Map<String, Object> arguments
-        return new Queue("order.delay.queue",true,false,false,args);
-    }
-
-    /**
-     * 消费者监听的队列
-     * @return
-     */
-    @Bean
-    public Queue orderReleaseOrderQueue(){
-        return new Queue("order.release.order.queue",true,false,false);
-    }
-
-    /**
-     * 秒杀完成后，消息存放的队列
-     * 秒杀成功,快速下单,发mq消息,剩下的下单流程,监听到队列后,慢慢进行
-     * 达到队列削峰效果
-     * @return
-     */
-    @Bean
-    public Queue orderSeckillOrderQueue(){
-        //String name, boolean durable, boolean exclusive, boolean autoDelete, Map<String, Object> arguments
-        return new Queue("order.seckill.order.queue",true,false,false);
-    }
-
-    /**
-     * 交换机
-     * @return
-     */
-    @Bean
-    public Exchange orderEventExchange(){
-        //String name, boolean durable, boolean autoDelete, Map<String, Object> arguments
-        return new TopicExchange("order-event-exchange",true,false);
-    }
-
-    /**
-     * 交换机与延时队列的绑定关系
-     * @return
-     */
-    @Bean
-    public Binding orderCreateOrderBinding(){
-        //String destination, DestinationType destinationType, String exchange, String routingKey,Map<String, Object> arguments
-
-        return new Binding("order.delay.queue",
-                Binding.DestinationType.QUEUE,
-                "order-event-exchange",
-                "order.create.order",
-                null);
-    }
-
-    /**
-     * 交换机与消费者监听队列的绑定关系
-     * @return
-     */
-    @Bean
-    public Binding orderReleaseOrderBinding(){
-        return new Binding("order.release.order.queue",
-                Binding.DestinationType.QUEUE,
-                "order-event-exchange",
-                "order.release.order",
-                null);
-    }
-
-    /**
-     * 订单释放直接和库存释放进行绑定
-     * 关闭订单后，发送消息，去进行解锁库存
-     * @return
-     */
-    @Bean
-    public Binding orderReleaseOtherBinding() {
-        return new Binding("stock.release.stock.queue",
-                Binding.DestinationType.QUEUE,
-                "order-event-exchange",
-                "order.release.other.#",
-                null);
-    }
-
-    /**
-     * 秒杀成功,快速下单,发mq消息,剩下的下单流程,监听到队列后,慢慢进行
-     * 达到队列削峰效果
-     * @return
-     */
-    @Bean
-    public Binding orderSeckillOrderQueueBinding(){
-        return new Binding("order.seckill.order.queue",
-                Binding.DestinationType.QUEUE,
-                "order-event-exchange",
-                "order.seckill.order",
-                null);
-    }
-
 
     /**
      * 使用JSON序列化机制，进行消息转换

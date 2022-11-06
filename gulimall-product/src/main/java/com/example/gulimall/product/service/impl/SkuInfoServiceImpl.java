@@ -166,8 +166,7 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoDao, SkuInfoEntity> i
             if (r.getCode() != 0) {
                 throw new RRException("远程调用seckill的getSkuSeckillInfo失败");
             }
-            SecKillSkuRedisTo seckillInfo = r.getData("data", new TypeReference<SecKillSkuRedisTo>() {
-            });
+            SecKillSkuRedisTo seckillInfo = r.getData("data", new TypeReference<SecKillSkuRedisTo>() {});
             skuItemVo.setSeckillInfo(seckillInfo);
         },executor);
 

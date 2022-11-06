@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.example.common.constant.OrderConstant;
 import com.example.common.exception.RRException;
 import com.example.common.to.mq.OrderTo;
+import com.example.common.to.mq.SeckillOrderTo;
 import com.example.common.utils.R;
 import com.example.common.vo.MemberRespVo;
 import com.example.gulimall.order.entity.OrderItemEntity;
@@ -349,6 +350,33 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
         orderItemService.saveBatch(order.getOrderItems());
     }
 
+
+    /**
+     * 创建秒杀商品的订单(简单封装一下就得了...)
+     * @param seckillOrder
+     */
+    @Override
+    public void createSeckillOrder(SeckillOrderTo seckillOrder) {
+        //1、保存订单信息
+        OrderEntity orderEntity = new OrderEntity();
+        orderEntity.setCreateTime(new Date());
+        orderEntity.setOrderSn(seckillOrder.getOrderSn());
+        orderEntity.setMemberId(seckillOrder.getMemberId());
+        orderEntity.setStatus(OrderConstant.OrderStatusEnum.CREATE_NEW.getCode());
+        BigDecimal multiply = seckillOrder.getSeckillPrice().multiply(new BigDecimal("" + seckillOrder.getNum()));
+        orderEntity.setPayAmount(multiply);
+        this.save(orderEntity);
+
+        //2、保存订单项信息
+        OrderItemEntity orderItemEntity = new OrderItemEntity();
+        orderItemEntity.setOrderSn(seckillOrder.getOrderSn());
+        orderItemEntity.setRealAmount(multiply);
+        orderItemEntity.setSkuQuantity(seckillOrder.getNum());
+        //获取当前SKU的详细信息进行设置  productFeignService.getSpuInfoBySkuId()，也不做了...
+
+        orderItemService.save(orderItemEntity);
+    }
+
     /**
      * 创建订单
      * @return
@@ -375,6 +403,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
 
         return orderCreateTo;
     }
+
 
     /**
      * 构建订单的金额，积分等信息

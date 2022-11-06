@@ -601,7 +601,7 @@
         if(resp.data.length > 0){
             resp.data.forEach(function(item){
 
-                $("<li onclick='to_href("+item.skuId+")'></li>")
+                $("<li onclick='to_href("+item.seckillSku.skuId+")'></li>")
                     .append($("<img style='width: 130px;height: 130px' src='"+item.skuInfo.skuDefaultImg+"'/>"))
                     .append($("<p>"+item.skuInfo.skuTitle+"</p>"))
                     .append($("<span>¥"+item.seckillSku.seckillPrice+"</span>"))

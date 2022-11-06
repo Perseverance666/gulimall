@@ -16,4 +16,7 @@ public class SeckillConstant {
 
     //分布式锁的key，用于防止重复上架商品
     public static final String SECKILL_UP_LOCK = "seckill:up:lock:";
+
+    //用于秒杀功能中，校验该用户是否买过。只要秒杀成功，就去占位setnx，保证幂等性
+    public static final String SECKILL_MEMBER_PREFIX = "seckill:member:";
 }

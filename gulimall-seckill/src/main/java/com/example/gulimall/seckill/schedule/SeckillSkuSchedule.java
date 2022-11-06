@@ -34,7 +34,8 @@ public class SeckillSkuSchedule {
     @Autowired
     private RedissonClient redissonClient;
 
-    @Scheduled(cron = "*/10 * * * * ?")
+    //cron: 秒 分 时 日 月 周  (日和周其中有一个是 ?)
+    @Scheduled(cron = "0 0 3 * * ?")
     public void upSeckillSkuLatest3Days(){
         //1、重复上架无需处理
         // 分布式锁。锁的业务执行完成，状态已经更新完成。释放锁以后。其他人获取到就会拿到最新的状态。

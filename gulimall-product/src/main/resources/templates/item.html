@@ -639,8 +639,13 @@
 
 								</div>
 							</div>
-							<div class="box-btns-two">
-								<a href="" id="addToCartA" th:attr="skuId=${item.info.skuId}">
+							<div class="box-btns-two" th:if="${item.seckillInfo!=null && (#dates.createNow().getTime()>=item.seckillInfo.startTime && #dates.createNow().getTime()<=item.seckillInfo.endTime)}">
+								<a href="#" id="secKillA" th:attr="skuId=${item.info.skuId},sessionId=${item.seckillInfo.seckillSku.promotionSessionId},code=${item.seckillInfo.randomCode}">
+									立即抢购
+								</a>
+							</div>
+							<div class="box-btns-two" th:if="${item.seckillInfo==null||(#dates.createNow().getTime()<item.seckillInfo.startTime || #dates.createNow().getTime()>item.seckillInfo.endTime)}">
+								<a href="#" id="addToCartA" th:attr="skuId=${item.info.skuId}">
 									加入购物车
 								</a>
 							</div>
@@ -1304,6 +1309,22 @@
 			var skuId = $(this).attr("skuId");
 			location.href = "http://cart.gulimall.com/gate.action?skuId="+skuId+"&num="+num;
 			//禁用超链接的默认行为
+			return false;
+		});
+
+		//立即抢购绑定单击事件
+		$("#secKillA").click(function(){
+			var isLogin = [[${session.loginUser!=null}]]; // true
+			if(isLogin){
+				//seckillId = promotionSessionId_skuId
+				var seckillId =$(this).attr("sessionid")+"_"+ $(this).attr("skuid");
+				var key = $(this).attr("code");
+				var num = $("#numInput").val();
+				location.href = "http://seckill.gulimall.com/seckill?seckillId="+seckillId+"&key="+key+"&num="+num;
+			}else {
+				alert("秒杀请先登录");
+			}
+
 			return false;
 		});
 
