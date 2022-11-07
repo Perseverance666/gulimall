@@ -21,12 +21,7 @@ import org.springframework.stereotype.Component;
  */
 @Slf4j
 @Component
-//@EnableAsync
-//@EnableScheduling
 public class TestSchedule {
-
-
-
     /**
      * 1、Spring中6位组成，不允许第7位的年
      * 2、在周几的位置，1-7代表周一到周日； MON-SUN
@@ -45,10 +40,10 @@ public class TestSchedule {
      *
      *
      */
-    @Async
-    @Scheduled(cron = "* * * ? * 5")
-    public void hello() throws InterruptedException {
-        log.info("hello...");
-        Thread.sleep(3000);
-    }
+//    @Async
+//    @Scheduled(cron = "* * * ? * 5")
+//    public void hello() throws InterruptedException {
+//        log.info("hello...");
+//        Thread.sleep(3000);
+//    }
 }

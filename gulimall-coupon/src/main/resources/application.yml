@@ -1,4 +1,11 @@
+server:
+  port: 7000
+
+
 spring:
+  application:
+    name: gulimall-coupon
+
   datasource:
     username: root
     password: root
@@ -9,9 +16,9 @@ spring:
     nacos:
       discovery:
         server-addr: 127.0.0.1:8848
-
-  application:
-    name: gulimall-coupon
+    sentinel:
+      transport:
+        dashboard: localhost:8333     #配置控制台信息
 
 
 mybatis-plus:
@@ -21,5 +28,9 @@ mybatis-plus:
       id-type: auto
 
 
-server:
-  port: 7000
+#Sentinel Endpoint支持,加入spring-boot-starter-actuator依赖,添加配置,暴露的 endpoint 路径为 /actuator/sentinel
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

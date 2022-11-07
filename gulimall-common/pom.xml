@@ -2,20 +2,27 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+
     <parent>
         <artifactId>gulimall</artifactId>
         <groupId>com.example.gulimall</groupId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
 
+
+    <groupId>com.example.gulimall</groupId>
     <artifactId>gulimall-common</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
     <description>每一个微服务公共的依赖，bean，工具类</description>
+
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
     </properties>
+
 
     <dependencies>
         <!--        mybatis-plus-->
@@ -65,6 +72,11 @@
 <!--            <artifactId>spring-cloud-starter-alibaba-seata</artifactId>-->
 <!--        </dependency>-->
 
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
+        </dependency>
+
         <!-- JSR303 校验注解 -->
         <dependency>
             <groupId>javax.validation</groupId>
@@ -98,8 +110,8 @@
             <artifactId>jetty-util</artifactId>
             <version>9.3.7.v20160115</version>
         </dependency>
-
     </dependencies>
+
 
     <dependencyManagement>
         <dependencies>
@@ -112,5 +124,6 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
 
 </project>

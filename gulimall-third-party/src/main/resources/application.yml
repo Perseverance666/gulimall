@@ -10,6 +10,9 @@ spring:
     nacos:
       discovery:
         server-addr: 127.0.0.1:8848
+    sentinel:
+      transport:
+        dashboard: localhost:8333     #配置控制台信息
     alicloud:
       access-key: LTAI5tJjnkgL8HET8gu8Vvgy
       secret-key: dwDjgDW3DLPoSzIfnQnayzsckzcnxI
@@ -21,3 +24,11 @@ spring:
         path: /data/send_sms
         appcode: 40b8cb66e9ad4b7a8efb207959578a48
         template-id: TPL_0000
+
+
+#Sentinel Endpoint支持,加入spring-boot-starter-actuator依赖,添加配置,暴露的 endpoint 路径为 /actuator/sentinel
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

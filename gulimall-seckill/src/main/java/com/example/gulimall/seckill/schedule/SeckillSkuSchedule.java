@@ -23,8 +23,7 @@ import java.util.concurrent.TimeUnit;
  *     后天00:00:00  - 23:59:59
  */
 
-@EnableAsync
-@EnableScheduling
+
 @Slf4j
 @Component
 public class SeckillSkuSchedule {

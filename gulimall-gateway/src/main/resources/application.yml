@@ -4,10 +4,14 @@ server:
 spring:
   application:
     name: gulimall-gateway
+
   cloud:
     nacos:
       discovery:
         server-addr: 127.0.0.1:8848
+    sentinel:
+      transport:
+        dashboard: localhost:8333     #配置控制台信息
     gateway:
       routes:
 #----------------------以下是后台管理系统的路由规则-------------------
@@ -83,3 +87,11 @@ spring:
           uri: lb://gulimall-seckill
           predicates:
             - Host=seckill.gulimall.com
+
+
+#Sentinel Endpoint支持,加入spring-boot-starter-actuator依赖,添加配置,暴露的 endpoint 路径为 /actuator/sentinel
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

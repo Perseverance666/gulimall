@@ -2,7 +2,8 @@ server:
   port: 20000
   servlet:
     session:
-      timeout: 30m
+      timeout: 30ms
+
 
 spring:
   application:
@@ -12,6 +13,9 @@ spring:
     nacos:
       discovery:
         server-addr: 127.0.0.1:8848
+    sentinel:
+      transport:
+        dashboard: localhost:8333     #配置控制台信息
 
   thymeleaf:
     cache: false
@@ -28,6 +32,14 @@ logging:
   level:
     com.example.gulimall: error
     com.alibaba.nacos.client.naming: WARN
+
+
+#Sentinel Endpoint支持,加入spring-boot-starter-actuator依赖,添加配置,暴露的 endpoint 路径为 /actuator/sentinel
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
 
 
 #自定义的，第三方gitee登录功能配置

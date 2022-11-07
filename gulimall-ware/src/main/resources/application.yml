@@ -1,4 +1,11 @@
+server:
+  port: 11000
+
+
 spring:
+  application:
+    name: gulimall-ware
+
   datasource:
     username: root
     password: root
@@ -9,13 +16,12 @@ spring:
     nacos:
       discovery:
         server-addr: 127.0.0.1:8848
+    sentinel:
+      transport:
+        dashboard: localhost:8333     #配置控制台信息
     alibaba:
       seata:
         tx-service-group:
-
-
-  application:
-    name: gulimall-ware
 
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
@@ -40,11 +46,17 @@ mybatis-plus:
     db-config:
       id-type: auto
 
-server:
-  port: 11000
 
 logging:
   level:
     com.example.gulimall: error
     com.alibaba.nacos.client.naming: WARN
+
+
+#Sentinel Endpoint支持,加入spring-boot-starter-actuator依赖,添加配置,暴露的 endpoint 路径为 /actuator/sentinel
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
 

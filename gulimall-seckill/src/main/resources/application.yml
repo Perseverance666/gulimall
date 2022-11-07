@@ -9,6 +9,10 @@ spring:
     nacos:
       discovery:
         server-addr: 127.0.0.1:8848
+    sentinel:
+      transport:
+        port: 8719      #端口配置会在应用对应的机器上启动一个 Http Server，该 Server 会与 Sentinel 控制台做交互
+        dashboard: localhost:8333     #配置控制台信息
 
   redis:
     host: 192.168.138.102
@@ -37,4 +41,13 @@ spring:
 
   thymeleaf:
     cache: false
+
+
+#Sentinel Endpoint支持,加入spring-boot-starter-actuator依赖,添加配置,暴露的 endpoint 路径为 /actuator/sentinel
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
 

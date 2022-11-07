@@ -8,18 +8,35 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 
 /**
- * 1、秒杀(高并发)系统关注的问题:
- *    1)、服务单一职责 + 独立部署：秒杀服务即使自己扛不住压力，挂掉，也不能影响其他服务
- *    2)、秒杀链接加密：给秒杀商品设置随机码，到秒杀时间才对外暴露，拿着随机码才能进行秒杀。防止恶意攻击，防止链接暴露
- *    3)、库存预热 + 快速扣减：定时任务上架后，秒杀商品的库存以信号量形式放入redis，做到原子减量。
- *                          秒杀读多写少，无需每次实时校验库存。库存预热，放入redis中。信号量控制进来秒杀的请求
- *    4)、动静分离：nginx做好动静分离，保证秒杀和商品详情页的动态请求才打到后端的服务集群。使用CDN网络，分担本集群压力
- *    5)、恶意请求拦截：识别非法攻击请求并进行拦截，网关层解决
- *    6)、流量错峰：使用各种手段将流量分担到更大宽度的时间点。比如验证码、加入购物车
- *    7)、限流、熔断、降级：前端限流+后端限流、限制次数、限制总量，快速失败降级运行，熔断隔离防止雪崩
- *    8)、队列削峰：所有秒杀成功的请求进入队列，慢慢创建订单，扣减库存即可
+ * 1、整合Sentinel
+ *   1）、导入依赖 spring-cloud-starter-alibaba-sentinel
+ *   2）、下载sentinel的控制台
+ *   3）、配置sentinel控制台地址信息
+ *   4) 、在控制台调整参数。【默认所有的流控设置保存在内存中，重启失效】
  *
- * 2、
+ *
+ * 2、每一个微服务都导入 actuator ()；并配合management.endpoints.web.exposure.include=*
+ * 3、自定义sentinel流控返回数据
+ *
+ * 4、使用Sentinel来保护feign远程调用：熔断；
+ *    1）、调用方的熔断保护：feign.sentinel.enabled=true
+ *    2）、调用方手动指定远程服务的降级策略。远程服务被降级处理。触发我们的熔断回调方法
+ *    3）、超大浏览的时候，必须牺牲一些远程服务。在服务的提供方（远程服务）指定降级策略；
+ *      提供方是在运行。但是不运行自己的业务逻辑，返回的是默认的降级数据（限流的数据），
+ *
+ * 5、自定义受保护的资源
+ *   1）、代码
+ *    try(Entry entry = SphU.entry("seckillSkus")){
+ *        //业务逻辑
+ *    }
+ *     catch(Execption e){}
+ *
+ *   2）、基于注解。
+ *   @SentinelResource(value = "getCurrentSeckillSkusResource",blockHandler = "blockHandler")
+ *
+ *   无论是1,2方式一定要配置被限流以后的默认返回.
+ *   url请求可以设置统一返回:WebCallbackManager
+ *
  */
 
 
