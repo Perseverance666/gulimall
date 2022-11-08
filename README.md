@@ -16,7 +16,7 @@
    以及application.yml中notify-url的域名
 3. Sentinel启动：java -jar sentinel-dashboard-1.6.3.jar --server.port=8333(默认端口是8080，被后台系统占用了)
 4. Sleuth整合Zipkin链路追踪需要去docker中启动容器，默认不是开机启动。里面的数据不是持久化的，
-   若想持久化，可以存放到ElasticSearch中，生产环境再做这个
+   若想持久化，可以存放到ElasticSearch中(生产环境再做这个)
 
 
 ### 组织结构
