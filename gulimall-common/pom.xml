@@ -72,9 +72,16 @@
 <!--            <artifactId>spring-cloud-starter-alibaba-seata</artifactId>-->
 <!--        </dependency>-->
 
+        <!-- 用于熔断降级、网关流控等 -->
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
+        </dependency>
+
+        <!-- sleuth整合zipkin实现可视化链路追踪,zipkin依赖中有sleuth-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-zipkin</artifactId>
         </dependency>
 
         <!-- JSR303 校验注解 -->
@@ -119,6 +126,14 @@
                 <groupId>com.alibaba.cloud</groupId>
                 <artifactId>spring-cloud-alibaba-dependencies</artifactId>
                 <version>2.1.0.RELEASE</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>Greenwich.SR3</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>

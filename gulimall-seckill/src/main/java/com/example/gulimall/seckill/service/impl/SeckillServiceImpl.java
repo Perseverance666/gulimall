@@ -1,5 +1,9 @@
 package com.example.gulimall.seckill.service.impl;
 
+import com.alibaba.csp.sentinel.Entry;
+import com.alibaba.csp.sentinel.SphU;
+import com.alibaba.csp.sentinel.annotation.SentinelResource;
+import com.alibaba.csp.sentinel.slots.block.BlockException;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
@@ -159,40 +163,57 @@ public class SeckillServiceImpl implements SeckillService {
         return null;
     }
 
+
     /**
      * 获取当前时间可以参与的秒杀商品信息
      *
+     * blockHandler 函数会在原方法被限流/降级/系统保护的时候调用，而 fallback 函数会针对所有类型的异常。
      * @return
      */
+    @SentinelResource(value = "getCurrentSeckillSkusResource",blockHandler = "blockHandler")
     @Override
     public List<SecKillSkuRedisTo> getCurrentSeckillSkus() {
-        //1、确定当前时间属于哪个秒杀场次
-        Long now = new Date().getTime();
-        Set<String> keys = redisTemplate.keys(SeckillConstant.SECKILL_SESSIONS_PREFIX + "*");
-        for (String key : keys) {
-            //seckill:sessions:1582250400000_1582254000000
-            String replace = key.replace(SeckillConstant.SECKILL_SESSIONS_PREFIX, "");
-            String[] s = replace.split("_");
-            Long startTime = Long.parseLong(s[0]);
-            Long endTime = Long.parseLong(s[1]);
-            if (now >= startTime && now <= endTime) {
-                //2、获取这个秒杀场次需要的所有商品信息
-                //2.1、从seckill:session中获取所有list类型的值,[promotionSessionId_skuId]
-                List<String> range = redisTemplate.opsForList().range(key, -100, 100);
-                //2.2、从seckill:skus中获取所有商品信息
-                BoundHashOperations<String, String, String> ops = redisTemplate.boundHashOps(SeckillConstant.SECKILL_SKUS_PREFIX);
-                List<String> list = ops.multiGet(range);
-                if (list != null) {
-                    List<SecKillSkuRedisTo> collect = list.stream().map(item -> {
-                        SecKillSkuRedisTo secKillSkuRedisTo = JSON.parseObject(item, SecKillSkuRedisTo.class);
-                        return secKillSkuRedisTo;
-                    }).collect(Collectors.toList());
-                    //找到当前时间属于哪个秒杀场次，不用再遍历去找了
-                    return collect;
+        try(Entry entry = SphU.entry("getCurrentSeckillSkus")){
+            //1、确定当前时间属于哪个秒杀场次
+            Long now = new Date().getTime();
+            Set<String> keys = redisTemplate.keys(SeckillConstant.SECKILL_SESSIONS_PREFIX + "*");
+            for (String key : keys) {
+                //seckill:sessions:1582250400000_1582254000000
+                String replace = key.replace(SeckillConstant.SECKILL_SESSIONS_PREFIX, "");
+                String[] s = replace.split("_");
+                Long startTime = Long.parseLong(s[0]);
+                Long endTime = Long.parseLong(s[1]);
+                if (now >= startTime && now <= endTime) {
+                    //2、获取这个秒杀场次需要的所有商品信息
+                    //2.1、从seckill:session中获取所有list类型的值,[promotionSessionId_skuId]
+                    List<String> range = redisTemplate.opsForList().range(key, -100, 100);
+                    //2.2、从seckill:skus中获取所有商品信息
+                    BoundHashOperations<String, String, String> ops = redisTemplate.boundHashOps(SeckillConstant.SECKILL_SKUS_PREFIX);
+                    List<String> list = ops.multiGet(range);
+                    if (list != null) {
+                        List<SecKillSkuRedisTo> collect = list.stream().map(item -> {
+                            SecKillSkuRedisTo secKillSkuRedisTo = JSON.parseObject(item, SecKillSkuRedisTo.class);
+                            return secKillSkuRedisTo;
+                        }).collect(Collectors.toList());
+                        //找到当前时间属于哪个秒杀场次，不用再遍历去找了
+                        return collect;
+                    }
                 }
             }
+        }catch (BlockException e){
+            log.error("资源被限流,{}",e.getMessage());
         }
 
+        return null;
+    }
+
+    /**
+     * blockHandler 函数会在原方法被限流、降级、系统保护的时候调用，而 fallback 函数会针对所有类型的异常。
+     * @param e
+     * @return
+     */
+    public List<SecKillSkuRedisTo> blockHandler(BlockException e){
+        log.error("getCurrentSeckillSkusResource被限流了..");
         return null;
     }
 

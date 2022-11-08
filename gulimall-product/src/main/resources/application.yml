@@ -44,6 +44,16 @@ spring:
   session:
     store-type: redis
 
+  zipkin:
+    base-url: http://192.168.138.102:9411/ # zipkin 服务器的地址
+    discoveryClientEnabled: false     # 关闭服务发现，否则 Spring Cloud 会把 zipkin 的 url 当做服务名称
+    sender:
+      type: web # 设置使用 http 的方式传输数据
+
+  sleuth:
+    sampler:
+      probability: 1 # 设置抽样采集率为 100%，默认为 0.1，即 10%
+
 
 mybatis-plus:
   mapper-locations: classpath:/mapper/**/*.xml
@@ -54,8 +64,10 @@ mybatis-plus:
 
 logging:
   level:
-    com.example.gulimall: info
+    com.example.gulimall: error
     com.alibaba.nacos.client.naming: WARN
+    org.springframework.cloud.openfeign: debug
+    org.springframework.cloud.sleuth: debug
 
 
 #Sentinel Endpoint支持,加入spring-boot-starter-actuator依赖,添加配置,暴露的 endpoint 路径为 /actuator/sentinel

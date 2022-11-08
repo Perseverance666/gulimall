@@ -7,13 +7,13 @@ import org.springframework.web.cors.reactive.CorsWebFilter;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 
 @Configuration
-public class CorsConfiguration {
+public class CorsConfig {
 
     @Bean
     public CorsWebFilter corsWebFilter(){
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 
-        org.springframework.web.cors.CorsConfiguration corsConfiguration = new org.springframework.web.cors.CorsConfiguration();
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
 
         //1、配置跨域
         corsConfiguration.addAllowedHeader("*");

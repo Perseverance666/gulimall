@@ -88,17 +88,11 @@
             <artifactId>spring-session-data-redis</artifactId>
         </dependency>
 
-        <!-- 用于审计模块，可以实时统计springboot应用的健康状况信息，请求的调用信息。sentinel就是通过springboot自己统计的这些信息，最终来做整个数据的实时统计的-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
-        </dependency>
-
         <!-- @EnableAspectJAutoProxy(exposeProxy = true)   //开启aspectJ动态代理功能 -->
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.boot</groupId>-->
-<!--            <artifactId>spring-boot-starter-aop</artifactId>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.springframework.boot</groupId>-->
+        <!--            <artifactId>spring-boot-starter-aop</artifactId>-->
+        <!--        </dependency>-->
 
         <!-- https://mvnrepository.com/artifact/com.alipay.sdk/alipay-sdk-java -->
         <!--        导入支付宝的SDK-->
@@ -106,6 +100,12 @@
             <groupId>com.alipay.sdk</groupId>
             <artifactId>alipay-sdk-java</artifactId>
             <version>4.22.110.ALL</version>
+        </dependency>
+
+        <!-- 用于审计模块，可以实时统计springboot应用的健康状况信息，请求的调用信息。sentinel就是通过springboot自己统计的这些信息，最终来做整个数据的实时统计的-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
     </dependencies>
 

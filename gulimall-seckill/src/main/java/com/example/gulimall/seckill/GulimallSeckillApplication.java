@@ -25,17 +25,17 @@ import org.springframework.session.data.redis.config.annotation.web.http.EnableR
  *      提供方是在运行。但是不运行自己的业务逻辑，返回的是默认的降级数据（限流的数据），
  *
  * 5、自定义受保护的资源
- *   1）、代码
+ *   1）、代码 (可以定义在指定代码块上)
  *    try(Entry entry = SphU.entry("seckillSkus")){
  *        //业务逻辑
  *    }
  *     catch(Execption e){}
  *
- *   2）、基于注解。
+ *   2）、基于注解。(只能定义在方法上)
  *   @SentinelResource(value = "getCurrentSeckillSkusResource",blockHandler = "blockHandler")
  *
- *   无论是1,2方式一定要配置被限流以后的默认返回.
- *   url请求可以设置统一返回:WebCallbackManager
+ *   无论是1),2)方式一定要配置被限流以后的默认返回.
+ *   而url请求可以设置统一返回:SentinelConfig -> WebCallbackManager
  *
  */
 
