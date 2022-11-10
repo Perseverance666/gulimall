@@ -14,15 +14,15 @@ spring:
       transport:
         dashboard: localhost:8333     #配置控制台信息
     alicloud:
-      access-key: LTAI5tJjnkgL8HET8gu8Vvgy
-      secret-key: dwDjgDW3DLPoSzIfnQnayzsckzcnxI
+      access-key: #
+      secret-key: #
       oss:
         endpoint: oss-cn-beijing.aliyuncs.com
         bucket: gulimall-2022-09
       sms:      #自定义的
         host: https://dfsns.market.alicloudapi.com
         path: /data/send_sms
-        appcode: 40b8cb66e9ad4b7a8efb207959578a48
+        appcode: #
         template-id: TPL_0000
 
   zipkin:
